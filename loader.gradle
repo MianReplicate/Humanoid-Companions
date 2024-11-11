@@ -1,0 +1,242 @@
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: "me.modmuss50.mod-publish-plugin"
+
+evaluationDependsOn(':common')
+
+def loomPlatform = project.property('loom.platform')
+def projectName
+if(loomPlatform == 'forge')
+    projectName = 'Forge'
+else
+    projectName = 'Fabric'
+
+def generatedResources = file("src/generated/resources")
+
+sourceSets.main.resources.srcDirs = [ 'src/main/resources', {
+    if(loomPlatform == 'fabric'){
+        project(':forge').file('src/generated/resources').absolutePath
+    }
+}
+]
+
+loom {
+    accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+    if(loomPlatform == 'forge'){
+        runs {
+            client {
+                programArgs "--username", "Replicate###"
+            }
+        }
+
+        forge {
+            if(accessWidenerFile.exists()) {
+                convertAccessWideners = true
+                extraAccessWideners.add accessWidenerFile.name
+            }
+
+            if(file("src/main/resources/${mod_id}.mixins.json").exists()) {
+                mixinConfig "${mod_id}.mixins.json"
+            }
+
+            if(getRootProject().file("common/src/main/resources/${mod_id}-common.mixins.json").exists()) {
+                mixinConfig "${mod_id}-common.mixins.json"
+            }
+
+            dataGen {
+                mod "${mod_id}"
+            }
+        }
+    }
+}
+
+def resourceTargets = ['fabric.mod.json', 'mods.toml']
+def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
+def replaceProperties = [
+        mod_id: mod_id,
+        mod_name: mod_name,
+        mod_version: mod_version,
+        mod_authors: mod_authors,
+        mod_credits:mod_credits,
+        mod_description: mod_description,
+        logo_file:logo_file,
+        issue_tracker_url: issue_tracker_url,
+        mod_license: mod_license,
+        minecraft_version: minecraft_version,
+        fabric_loader_version: fabric_loader_version,
+        fabric_api_version: fabric_api_version,
+        repository_url: repository_url,
+        forge_version_range: forge_version_range,
+        forge_version: forge_version,
+        forge_loader_version_range: forge_loader_version_range,
+        minimum_minecraft_version: minimum_minecraft_version,
+        maximum_minecraft_version: maximum_minecraft_version,
+]
+processResources {
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
+
+    intoTargets.each { target ->
+        if (file(target).exists()) {
+            copy {
+                from(sourceSets.main.resources) {
+                    include resourceTargets
+                    expand replaceProperties
+                }
+                into target
+            }
+        }
+    }
+
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    create("development${projectName}") {
+        extendsFrom common
+    }
+}
+
+architectury {
+    platformSetupLoomIde()
+
+    if(loomPlatform == 'fabric') fabric()
+    else if (loomPlatform == 'forge') forge()
+}
+
+dependencies {
+    // thanks sodium for adding forge support, very cool :>
+    def mcVersion = rootProject.hasProperty('common_networking_mc_version') ? "${common_networking_mc_version}" : "${minecraft_version}"
+    modApi(include("mysticdrew:common-networking-${loomPlatform}:${common_networking_version}-${common_networking_mc_version}"))
+    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-${loomPlatform}:${jei_version}")
+
+    if(loomPlatform == 'fabric'){
+        modRuntimeOnly("maven.modrinth:sodium:${sodium_version}-fabric")
+        modRuntimeOnly("curse.maven:modernfix-${modern_fix_id}:${modern_fix}")
+        modRuntimeOnly("curse.maven:ferritecore-${ferritecore_id}:${ferritecore}")
+        modRuntimeOnly("curse.maven:mousetweaks-${mouse_tweaks_id}:${mouse_tweaks}")
+    }
+
+    switch(loomPlatform){
+        case 'forge':
+            forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+            break
+        case 'fabric':
+            modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+            modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${minecraft_version}"
+            modApi(include("fuzs.forgeconfigapiport:forgeconfigapiport-${loomPlatform}:${forge_config_api_port_version}"))
+            break
+    }
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowCommon(project(path: ':common', configuration: "transformProduction${projectName}")) { transitive false }
+}
+
+publishMods {
+    file = remapJar.archiveFile
+    changelog = new File("${rootProject.projectDir}/changelog.md").text
+    modLoaders.add("${loomPlatform}")
+    type = STABLE
+    String maximum_minecraft_version = !rootProject.maximum_minecraft_version.isBlank() ? rootProject.maximum_minecraft_version : rootProject.minecraft_version
+    String toDisplay = minimum_minecraft_version != maximum_minecraft_version ? "${minimum_minecraft_version}-${maximum_minecraft_version}" : "${maximum_minecraft_version}"
+    displayName = "[${projectName}] ${toDisplay} - ${rootProject.mod_version}"
+
+    String CURSE_TOKEN = findProperty("CURSEFORGE_TOKEN")
+    if (CURSE_TOKEN != null) {
+        curseforge {
+            accessToken = CURSE_TOKEN
+            projectId = "${rootProject.curseforge_id}"
+            minecraftVersions.add("${rootProject.minecraft_version}")
+            embeds("common-network", "forge-config-api-port-fabric")
+        }
+    }
+
+    String MODRINTH_TOKEN = findProperty("MODRINTH_TOKEN")
+    if (MODRINTH_TOKEN != null) {
+        modrinth {
+            accessToken = MODRINTH_TOKEN
+            projectId = "${rootProject.modrinth_id}"
+            minecraftVersions.add("${rootProject.minecraft_version}")
+            projectDescription = new File("${rootProject.projectDir}/README.md").text
+            embeds("common-network", "forge-config-api-port")
+            if(minimum_minecraft_version != maximum_minecraft_version){
+                minecraftVersionRange {
+                    start = "${minimum_minecraft_version}"
+                    end = "${maximum_minecraft_version}"
+
+                    includeSnapshots = true
+                }
+            }
+        }
+    }
+}
+
+shadowJar {
+    if(loomPlatform != 'fabric')
+        exclude 'fabric.mod.json'
+    exclude 'architectury.common.json'
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    if(loomPlatform == 'fabric')
+        injectAccessWidener = true
+
+    inputFile = shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set(null)
+}
+
+jar {
+    archiveClassifier.set('dev')
+}
+
+sourcesJar {
+    def commonSources = project(':common').sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+idea.module {
+    excludeDirs += [
+            file('.gradle'),
+            file('build'),
+            file('run')
+    ]
+}
+
+publishing {
+    publications {
+        if(loomPlatform == 'forge')
+            mavenForge(MavenPublication) {
+                groupId = group
+                artifactId = mod_id
+                version = version + "-${loomPlatform}"
+                from components.java
+            }
+        else
+            mavenFabric(MavenPublication) {
+                groupId = group
+                artifactId = mod_id
+                version = version + "-${loomPlatform}"
+                from components.java
+            }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
