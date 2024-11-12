@@ -1,6 +1,6 @@
 package mc.mian.humanoidcompanions.registry.forge;
 
-import mc.mian.humanoidcompanions.forge.TemplateModForge;
+import mc.mian.humanoidcompanions.forge.HumanoidCompanionsForge;
 import mc.mian.humanoidcompanions.registry.DeferredRegistry;
 import mc.mian.humanoidcompanions.registry.RegistrySupplier;
 import mc.mian.humanoidcompanions.registry.RegistrySupplierHolder;
@@ -34,7 +34,7 @@ public class DeferredRegistryImpl {
 
         @Override
         public void register() {
-            this.register.register(TemplateModForge.modEventBus);
+            this.register.register(HumanoidCompanionsForge.modEventBus);
         }
 
 

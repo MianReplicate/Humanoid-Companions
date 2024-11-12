@@ -1,6 +1,6 @@
 package mc.mian.humanoidcompanions.datagen;
 
-import mc.mian.humanoidcompanions.common.item.TemplateItems;
+import mc.mian.humanoidcompanions.common.item.HCItems;
 import mc.mian.humanoidcompanions.util.HCConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -19,6 +19,6 @@ public class TemplateItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        this.tag(ItemTags.MUSIC_DISCS).add(TemplateItems.TEMPLATE_ITEM.get());
+        this.tag(ItemTags.MUSIC_DISCS).add(HCItems.TEMPLATE_ITEM.get());
     }
 }

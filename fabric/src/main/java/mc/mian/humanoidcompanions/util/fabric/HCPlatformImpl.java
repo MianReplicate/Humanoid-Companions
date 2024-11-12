@@ -12,7 +12,7 @@ import net.minecraft.server.MinecraftServer;
 
 import java.util.Collection;
 
-public class TemplatePlatformImpl {
+public class HCPlatformImpl {
     public static MinecraftServer MINECRAFT_SERVER;
 
     public static boolean isProduction() {

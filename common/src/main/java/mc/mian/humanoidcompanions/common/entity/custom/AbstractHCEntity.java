@@ -1,11 +1,13 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
 import mc.mian.humanoidcompanions.common.entity.HCEntities;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
@@ -13,6 +15,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -93,9 +96,14 @@ public class AbstractHCEntity extends TamableAnimal {
         return stack;
     }
 
-
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob parent) {
         return HCEntities.Knight.get().create(level);
+    }
+
+    @Override
+    public void tame(Player player) {
+        this.setTame(true);
+        this.setOwnerUUID(player.getUUID());
     }
 }

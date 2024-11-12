@@ -1,6 +1,6 @@
 package mc.mian.humanoidcompanions.datagen;
 
-import mc.mian.humanoidcompanions.common.item.TemplateItems;
+import mc.mian.humanoidcompanions.common.item.HCItems;
 import mc.mian.humanoidcompanions.util.HCConstants;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -13,6 +13,6 @@ public class TemplateItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        basicItem(TemplateItems.TEMPLATE_ITEM.get());
+        basicItem(HCItems.TEMPLATE_ITEM.get());
     }
 }

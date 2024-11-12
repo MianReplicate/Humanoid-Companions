@@ -10,7 +10,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Collection;
 
-public class TemplatePlatformImpl {
+public class HCPlatformImpl {
     public static boolean isProduction() {
         return FMLLoader.isProduction();
     }

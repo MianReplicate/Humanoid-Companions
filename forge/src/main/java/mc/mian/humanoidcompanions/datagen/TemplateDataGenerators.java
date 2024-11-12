@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.datagen;
 
 import mc.mian.humanoidcompanions.common.block.TemplateBlocks;
-import mc.mian.humanoidcompanions.common.item.TemplateItems;
+import mc.mian.humanoidcompanions.common.item.HCItems;
 import mc.mian.humanoidcompanions.util.HCUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -36,7 +36,7 @@ public class TemplateDataGenerators {
 
     private static void addVirtualPackContents(ExistingFileHelper existingFileHelper) {
         existingFileHelper.trackGenerated(
-                HCUtil.modLoc(TemplateItems.TEMPLATE_ITEM.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_ITEM_PREFIX
+                HCUtil.modLoc(HCItems.TEMPLATE_ITEM.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_ITEM_PREFIX
         );
         existingFileHelper.trackGenerated(
                 HCUtil.modLoc(TemplateBlocks.TEMPLATE_BLOCK.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_BLOCK_PREFIX

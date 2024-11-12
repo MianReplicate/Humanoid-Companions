@@ -24,6 +24,7 @@ public class HCConfiguration {
         this.baseHealth = buildInt(builder, "Base Health:", 20, 5, Integer.MAX_VALUE, "Sets the base health of the companion. Companions can spawn with a -+4 range from this value.");
         this.lowHealthFood = buildBoolean(builder, "Low Health Food Warning:", true, "Toggles whether companions ask for food if their health is below half.");
         this.creeperWarning = buildBoolean(builder, "Creeper Warning:", true, "Toggles whether companions alert you if a creeper is nearby.");
+
     }
 
     private static ForgeConfigSpec.IntValue buildInt(final ForgeConfigSpec.Builder builder, String translationPath, int defaultValue, int min, int max, @Nullable String comment) {

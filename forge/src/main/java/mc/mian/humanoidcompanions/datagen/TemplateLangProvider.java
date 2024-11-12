@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.datagen;
 
 import mc.mian.humanoidcompanions.common.block.TemplateBlocks;
-import mc.mian.humanoidcompanions.common.item.TemplateItems;
+import mc.mian.humanoidcompanions.common.item.HCItems;
 import mc.mian.humanoidcompanions.util.HCConstants;
 import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
@@ -52,8 +52,8 @@ public class TemplateLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         addBlock(TemplateBlocks.TEMPLATE_BLOCK, "Meowing Block");
-        addItem(TemplateItems.TEMPLATE_ITEM, "Meowing Disc");
-        add(TemplateItems.TEMPLATE_ITEM.get().getDescriptionId()+".desc", "Tanger - Scratch!");
+        addItem(HCItems.TEMPLATE_ITEM, "Meowing Disc");
+        add(HCItems.TEMPLATE_ITEM.get().getDescriptionId()+".desc", "Tanger - Scratch!");
         addKeybind("ping", "Ping");
 
         addSound("fail", "no meow :<");

@@ -12,10 +12,10 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(HCConstants.MOD_ID)
-public class TemplateModForge {
+public class HumanoidCompanionsForge {
     public static final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     public static final IEventBus eventBus = MinecraftForge.EVENT_BUS;
-    public TemplateModForge() {
+    public HumanoidCompanionsForge() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHolder.SERVER_SPEC);
 
         HumanoidCompanions.config = ConfigHolder.SERVER;
