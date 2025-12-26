@@ -38,13 +38,13 @@ public class HCKeys {
 
     public static class Structures {
         public static final ResourceKey<Structure> ACACIA_HOUSE = createStructure(HCUtil.modLoc("acacia_house"));
-        public static final ResourceKey<Structure> BIRCH_HOUSE = createStructure(HCUtil.modLoc("has_structure/birch_house"));
-        public static final ResourceKey<Structure> DARK_OAK_HOUSE = createStructure(HCUtil.modLoc("has_structure/dark_oak_house"));
-        public static final ResourceKey<Structure> OAK_BIRCH_HOUSE = createStructure(HCUtil.modLoc("has_structure/oak_birch_house"));
-        public static final ResourceKey<Structure> OAK_HOUSE = createStructure(HCUtil.modLoc("has_structure/oak_house"));
-        public static final ResourceKey<Structure> SANDSTONE_HOUSE = createStructure(HCUtil.modLoc("has_structure/sandstone_house"));
-        public static final ResourceKey<Structure> SPRUCE_HOUSE = createStructure(HCUtil.modLoc("has_structure/spruce_house"));
-        public static final ResourceKey<Structure> TERRACOTTA_HOUSE = createStructure(HCUtil.modLoc("has_structure/terracotta_house"));
+        public static final ResourceKey<Structure> BIRCH_HOUSE = createStructure(HCUtil.modLoc("birch_house"));
+        public static final ResourceKey<Structure> DARK_OAK_HOUSE = createStructure(HCUtil.modLoc("dark_oak_house"));
+        public static final ResourceKey<Structure> OAK_BIRCH_HOUSE = createStructure(HCUtil.modLoc("oak_birch_house"));
+        public static final ResourceKey<Structure> OAK_HOUSE = createStructure(HCUtil.modLoc("oak_house"));
+        public static final ResourceKey<Structure> SANDSTONE_HOUSE = createStructure(HCUtil.modLoc("sandstone_house"));
+        public static final ResourceKey<Structure> SPRUCE_HOUSE = createStructure(HCUtil.modLoc("spruce_house"));
+        public static final ResourceKey<Structure> TERRACOTTA_HOUSE = createStructure(HCUtil.modLoc("terracotta_house"));
 
     }
 

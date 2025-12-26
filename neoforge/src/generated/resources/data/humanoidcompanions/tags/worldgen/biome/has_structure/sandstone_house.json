@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#minecraft:is_beach",
+    "#minecraft:has_structure/desert_pyramid",
+    {
+      "id": "#c:is_beach",
+      "required": false
+    },
+    {
+      "id": "#c:is_desert",
+      "required": false
+    }
+  ]
+}

@@ -92,7 +92,7 @@ public class HCPoolProvider {
                         ),
                         StructureTemplatePool.Projection.RIGID
                 ));
-        context.register(HCKeys.OAK_POOL,
+        context.register(HCKeys.SANDSTONE_POOL,
                 new StructureTemplatePool(
                         emptyHolder,
                         ImmutableList.of(

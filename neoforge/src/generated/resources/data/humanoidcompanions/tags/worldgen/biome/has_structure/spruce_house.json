@@ -1,0 +1,19 @@
+{
+  "values": [
+    "#minecraft:spawns_snow_foxes",
+    "#minecraft:has_structure/village_snowy",
+    "#minecraft:is_taiga",
+    {
+      "id": "#c:is_taiga",
+      "required": false
+    },
+    {
+      "id": "#c:is_snowy",
+      "required": false
+    },
+    {
+      "id": "#c:is_windswept",
+      "required": false
+    }
+  ]
+}

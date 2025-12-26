@@ -29,8 +29,8 @@ public class HCDataGenerators {
         if (ev.includeServer()) {
             gen.addProvider(ev.includeServer(), new HCLangProvider(packOutput));
             gen.addProvider(ev.includeServer(), new HCItemModelProvider(packOutput, efh));
-            gen.addProvider(ev.includeServer(), new HCItemTagsProvider(packOutput, provider));
-            gen.addProvider(ev.includeServer(), new HCBiomeTagsProvider(packOutput, provider));
+            gen.addProvider(ev.includeServer(), new HCItemTagsProvider(ev, provider).provide());
+            gen.addProvider(ev.includeServer(), new HCBiomeTagsProvider(ev, provider).provide());
             gen.addProvider(ev.includeServer(), new HCWorldGenProvider(packOutput, provider));
         }
     }

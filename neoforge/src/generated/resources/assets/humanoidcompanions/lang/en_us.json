@@ -1,0 +1,13 @@
+{
+  "container.humanoidcompanions.companion_inventory": "Companion Inventory",
+  "entity.humanoidcompanions.arbalist": "Arbalist",
+  "entity.humanoidcompanions.archer": "Archer",
+  "entity.humanoidcompanions.axeguard": "Axeguard",
+  "entity.humanoidcompanions.knight": "Knight",
+  "item.humanoidcompanions.arbalist_spawn_egg": "Arbalist Spawn Egg",
+  "item.humanoidcompanions.archer_spawn_egg": "Archer Spawn Egg",
+  "item.humanoidcompanions.axeguard_spawn_egg": "Axeguard Spawn Egg",
+  "item.humanoidcompanions.knight_spawn_egg": "Knight Spawn Egg",
+  "title.humanoidcompanions.class": "Class",
+  "title.humanoidcompanions.health": "Health"
+}

@@ -1,0 +1,23 @@
+{
+  "values": [
+    "#minecraft:is_jungle",
+    "#minecraft:is_forest",
+    "#minecraft:is_hill",
+    {
+      "id": "#c:is_hill",
+      "required": false
+    },
+    {
+      "id": "#c:is_forest",
+      "required": false
+    },
+    {
+      "id": "#c:is_plains",
+      "required": false
+    },
+    {
+      "id": "#c:is_jungle",
+      "required": false
+    }
+  ]
+}

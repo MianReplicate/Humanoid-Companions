@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#minecraft:axes",
+    {
+      "id": "#forge:tools/axes",
+      "required": false
+    }
+  ]
+}

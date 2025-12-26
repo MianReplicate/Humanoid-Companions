@@ -1,0 +1,42 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1234567895,
+    "separation": 10,
+    "spacing": 15
+  },
+  "structures": [
+    {
+      "structure": "humanoidcompanions:oak_house",
+      "weight": 1
+    },
+    {
+      "structure": "humanoidcompanions:oak_birch_house",
+      "weight": 1
+    },
+    {
+      "structure": "humanoidcompanions:birch_house",
+      "weight": 1
+    },
+    {
+      "structure": "humanoidcompanions:sandstone_house",
+      "weight": 1
+    },
+    {
+      "structure": "humanoidcompanions:acacia_house",
+      "weight": 1
+    },
+    {
+      "structure": "humanoidcompanions:spruce_house",
+      "weight": 1
+    },
+    {
+      "structure": "humanoidcompanions:dark_oak_house",
+      "weight": 1
+    },
+    {
+      "structure": "humanoidcompanions:terracotta_house",
+      "weight": 1
+    }
+  ]
+}
