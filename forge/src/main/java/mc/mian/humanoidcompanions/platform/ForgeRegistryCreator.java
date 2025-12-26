@@ -1,6 +1,6 @@
 package mc.mian.humanoidcompanions.platform;
 
-import mc.mian.humanoidcompanions.forge.TemplateModForge;
+import mc.mian.humanoidcompanions.forge.HCForge;
 import mc.mian.humanoidcompanions.platform.services.IRegistryCreator;
 import mc.mian.humanoidcompanions.common.registry.DeferredRegistry;
 import mc.mian.humanoidcompanions.common.registry.RegistrySupplier;
@@ -34,7 +34,7 @@ public class ForgeRegistryCreator implements IRegistryCreator {
 
         @Override
         public void register() {
-            this.register.register(TemplateModForge.modEventBus);
+            this.register.register(HCForge.modEventBus);
         }
 
 

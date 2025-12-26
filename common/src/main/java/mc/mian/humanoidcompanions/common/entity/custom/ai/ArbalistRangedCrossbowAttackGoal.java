@@ -1,6 +1,7 @@
 package mc.mian.humanoidcompanions.common.entity.custom.ai;
 
-import com.github.justinwon777.humancompanions.entity.AbstractHumanCompanionEntity;
+import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +11,8 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ChargedProjectiles;
 
 import java.util.EnumSet;
 
@@ -58,7 +61,7 @@ public class ArbalistRangedCrossbowAttackGoal<T extends AbstractHumanCompanionEn
         if (this.mob.isUsingItem()) {
             this.mob.stopUsingItem();
             this.mob.setChargingCrossbow(false);
-            CrossbowItem.setCharged(this.mob.getUseItem(), false);
+            this.mob.getUseItem().set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
         }
 
     }
@@ -85,7 +88,7 @@ public class ArbalistRangedCrossbowAttackGoal<T extends AbstractHumanCompanionEn
             double d0 = this.mob.distanceToSqr(livingentity);
             boolean flag2 = (d0 > (double) this.attackRadiusSqr || this.seeTime < 5) && this.attackDelay == 0;
 
-            if (this.mob.isStationery() && this.mob.isGuarding()) {
+            if (this.mob.isStationary() && this.mob.isGuarding()) {
                 if (!flag || d0 > (double) this.attackRadiusSqr) {
                     this.mob.clearTarget();
                 }
@@ -106,7 +109,7 @@ public class ArbalistRangedCrossbowAttackGoal<T extends AbstractHumanCompanionEn
             this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
             if (this.crossbowState == CrossbowState.UNCHARGED) {
                 if (!flag2) {
-                    this.mob.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.mob, item -> item instanceof CrossbowItem));
+                    this.mob.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.mob, Items.CROSSBOW));
                     this.crossbowState = CrossbowState.CHARGING;
                     this.mob.setChargingCrossbow(true);
                 }
@@ -117,7 +120,7 @@ public class ArbalistRangedCrossbowAttackGoal<T extends AbstractHumanCompanionEn
 
                 int i = this.mob.getTicksUsingItem();
                 ItemStack itemstack = this.mob.getUseItem();
-                if (i >= CrossbowItem.getChargeDuration(itemstack)) {
+                if (i >= CrossbowItem.getChargeDuration(itemstack, this.mob)) {
                     this.mob.releaseUsingItem();
                     this.crossbowState = CrossbowState.CHARGED;
                     this.attackDelay = 20 + this.mob.getRandom().nextInt(20);
@@ -131,8 +134,8 @@ public class ArbalistRangedCrossbowAttackGoal<T extends AbstractHumanCompanionEn
             } else if (this.crossbowState == CrossbowState.READY_TO_ATTACK && flag) {
                 if (this.mob.getTarget() != null) {
                     this.mob.performRangedAttack(livingentity, 1.0F);
-                    ItemStack itemstack1 = this.mob.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this.mob, item -> item instanceof CrossbowItem));
-                    CrossbowItem.setCharged(itemstack1, false);
+                    ItemStack itemstack1 = this.mob.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this.mob, Items.CROSSBOW));
+                    itemstack1.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
                     this.crossbowState = CrossbowState.UNCHARGED;
                 }
             }

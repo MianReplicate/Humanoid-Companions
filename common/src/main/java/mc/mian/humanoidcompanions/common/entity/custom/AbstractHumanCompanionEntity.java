@@ -2,8 +2,12 @@ package mc.mian.humanoidcompanions.common.entity.custom;
 
 import commonnetwork.api.Network;
 import mc.mian.humanoidcompanions.common.config.HCConfiguration;
+import mc.mian.humanoidcompanions.common.container.CompanionContainer;
 import mc.mian.humanoidcompanions.common.entity.HCEntities;
 import mc.mian.humanoidcompanions.common.entity.custom.ai.*;
+import mc.mian.humanoidcompanions.common.network.custom.OpenInventoryPacket;
+import mc.mian.humanoidcompanions.common.util.HCUtil;
+import mc.mian.humanoidcompanions.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -28,15 +32,17 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AbstractHumanCompanionEntity extends TamableAnimal {
 
@@ -60,7 +66,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> GUARDING = SynchedEntityData.defineId(AbstractHumanCompanionEntity.class,
             EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> STATIONERY =
+    private static final EntityDataAccessor<Boolean> STATIONARY =
             SynchedEntityData.defineId(AbstractHumanCompanionEntity.class,
             EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Optional<BlockPos>> PATROL_POS = SynchedEntityData.defineId(AbstractHumanCompanionEntity.class,
@@ -112,7 +118,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         this.goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
         this.goalSelector.addGoal(2, new AvoidCreeperGoal(this, Creeper.class, 10.0F, 1.5D, 1.5D));
         this.goalSelector.addGoal(3, new MoveBackToGuardGoal(this));
-        this.goalSelector.addGoal(3, new CustomFollowOwnerGoal(this, 1.3D, 8.0F, 2.5F, false));
+        this.goalSelector.addGoal(3, new CustomFollowOwnerGoal(this, 1.3D, 8.0F, 2.5F));
         this.goalSelector.addGoal(5, new CustomWaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
@@ -140,7 +146,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         builder.define(PATROLLING, false);
         builder.define(FOLLOWING, false);
         builder.define(GUARDING, false);
-        builder.define(STATIONERY, false);
+        builder.define(STATIONARY, false);
         builder.define(PATROL_POS, Optional.empty());
         builder.define(PATROL_RADIUS, 10);
         builder.define(SEX, 0);
@@ -153,8 +159,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     }
 
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-                                        MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn,
-                                        @Nullable CompoundTag dataTag) {
+                                        MobSpawnType reason, SpawnGroupData spawnDataIn) {
         int baseHealth = HCConfiguration.BASE_HEALTH.get() + CompanionData.getHealthModifier();
         modifyMaxHealth(baseHealth - 20, "companion base health", true);
         this.setHealth(this.getMaxHealth());
@@ -181,12 +186,12 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             }
             checkArmor();
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.put("inventory", this.inventory.createTag());
+        tag.put("inventory", this.inventory.createTag(this.registryAccess()));
         tag.putInt("skin", this.getCompanionSkin());
         tag.putBoolean("Eating", this.isEating());
         tag.putBoolean("Alert", this.isAlert());
@@ -194,7 +199,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         tag.putBoolean("Patrolling", this.isPatrolling());
         tag.putBoolean("Following", this.isFollowing());
         tag.putBoolean("Guarding", this.isGuarding());
-        tag.putBoolean("Stationery", this.isStationery());
+        tag.putBoolean("Stationery", this.isStationary());
         tag.putInt("radius", this.getPatrolRadius());
         tag.putInt("sex", this.getSex());
         tag.putInt("baseHealth", this.getBaseHealth());
@@ -220,7 +225,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         this.setPatrolling(tag.getBoolean("Patrolling"));
         this.setFollowing(tag.getBoolean("Following"));
         this.setGuarding(tag.getBoolean("Guarding"));
-        this.setStationery(tag.getBoolean("Stationery"));
+        this.setStationary(tag.getBoolean("Stationery"));
         this.setPatrolRadius(tag.getInt("radius"));
         this.setSex(tag.getInt("sex"));
         this.experienceProgress = tag.getFloat("XpP");
@@ -243,7 +248,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             addHuntingGoals();
         }
         if (tag.contains("inventory", 9)) {
-            this.inventory.fromTag(tag.getList("inventory", 10));
+            this.inventory.fromTag(tag.getList("inventory", 10), this.registryAccess());
         }
         if (tag.contains("patrol_pos")) {
             int[] positions = tag.getIntArray("patrol_pos");
@@ -264,6 +269,11 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     }
 
     @Override
+    public boolean isFood(ItemStack stack) {
+        return ArrayUtils.contains(foodRequirements.keySet().toArray(new String[0]), stack.getItem().getDescription().getString());
+    }
+
+    @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob parent) {
         return HCEntities.KNIGHT.get().create(level);
     }
@@ -274,7 +284,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             if (!this.isTame() && !this.level().isClientSide()) {
                 if (itemstack.getComponents().has(DataComponents.FOOD)) {
                     String itemFood = itemstack.getItem().getDescription().getString();
-                    if (ArrayUtils.contains(foodRequirements.keySet().toArray(new String[0]), itemFood)) {
+                    if (isFood(itemstack)) {
                         if (foodRequirements.get(itemFood) > 0) {
                             itemstack.shrink(1);
                             foodRequirements.put(itemFood, foodRequirements.get(itemFood) - 1);
@@ -347,15 +357,12 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             player.closeContainer();
         }
         player.nextContainerCounter();
-        Network.getNetworkHandler().sendToClient(new OpenInventoryPacket(), player);
-
-        PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new OpenInventoryPacket(
-                player.containerCounter, this.inventory.getContainerSize(), this.getId()));
+        Network.getNetworkHandler().sendToClient(new OpenInventoryPacket(player.containerCounter, this.inventory.getContainerSize(), this.getId()), player);
 
         player.containerMenu = new CompanionContainer(player.containerCounter, player.getInventory(), this.inventory);
         player.initMenu(player.containerMenu);
 
-//        MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, player.containerMenu));
+        Services.EVENT.postOpenContainer(player, player.containerMenu);
     }
 
     public void checkArmor() {
@@ -416,45 +423,39 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         }
     }
 
-    public boolean hurt(DamageSource p_34288_, float p_34289_) {
-        if (p_34288_.getEntity() == this.getOwner() && !Config.FRIENDLY_FIRE_PLAYER.get()) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.getEntity() == this.getOwner() && !HCConfiguration.FRIENDLY_FIRE_PLAYER.get()) {
             return false;
         }
 
-        if (p_34288_.is(DamageTypeTags.IS_FALL) && !Config.FALL_DAMAGE.get()) {
+        if (source.is(DamageTypeTags.IS_FALL) && !HCConfiguration.FALL_DAMAGE.get()) {
             return false;
         }
 
-        hurtArmor(p_34288_, p_34289_);
-        return super.hurt(p_34288_, p_34289_);
+        hurtArmor(source, amount);
+        return super.hurt(source, amount);
     }
 
-    public void hurtArmor(DamageSource p_150073_, float p_150074_) {
-        if (!(p_150074_ <= 0.0F)) {
-            p_150074_ /= 4.0F;
-            if (p_150074_ < 1.0F) {
-                p_150074_ = 1.0F;
+    public void hurtArmor(DamageSource source, float amount) {
+        if (!(amount <= 0.0F)) {
+            amount /= 4.0F;
+            if (amount < 1.0F) {
+                amount = 1.0F;
             }
 
             for(ItemStack itemstack : this.getArmorSlots()) {
-                if ((!p_150073_.is(DamageTypeTags.IS_FIRE) || !itemstack.getItem().isFireResistant()) && itemstack.getItem() instanceof ArmorItem) {
-                    itemstack.hurtAndBreak((int)p_150074_, this, (p_35997_) -> {
-                        p_35997_.broadcastBreakEvent(((ArmorItem) itemstack.getItem()).getEquipmentSlot());
-                    });
+                if ((!source.is(DamageTypeTags.IS_FIRE) || !itemstack.getItem().components().has(DataComponents.FIRE_RESISTANT)) && itemstack.getItem() instanceof ArmorItem) {
+                    itemstack.hurtAndBreak((int)amount, this, ((ArmorItem) itemstack.getItem()).getEquipmentSlot());
                 }
             }
 
         }
     }
 
-    public void die(DamageSource source) {
-        super.die(source);
-    }
-
     protected void dropEquipment() {
         for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             ItemStack itemstack = this.inventory.getItem(i);
-            if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+            if (!itemstack.isEmpty() && !EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
                 this.spawnAtLocation(itemstack);
             }
         }
@@ -463,9 +464,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     public boolean doHurtTarget(Entity entity) {
         ItemStack itemstack = this.getMainHandItem();
         if (!this.level().isClientSide && !itemstack.isEmpty() && entity instanceof LivingEntity) {
-            itemstack.hurtAndBreak(1, this, (p_43296_) -> {
-                p_43296_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-            });
+            itemstack.hurtAndBreak(1, this, EquipmentSlot.MAINHAND);
             if (this.getMainHandItem().isEmpty()) {
                 Component broken = Component.literal("My weapon broke!");
                 if (this.isTame()) {
@@ -478,19 +477,19 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     }
 
     @Override
-    public ItemStack eat(Level world, ItemStack stack) {
-        if (stack.isEdible()) {
-            this.heal(stack.getItem().getFoodProperties().getNutrition());
+    public ItemStack eat(Level level, ItemStack stack, FoodProperties foodProperties) {
+        if (stack.has(DataComponents.FOOD)) {
+            this.heal(foodProperties.nutrition());
         }
-        super.eat(world, stack);
+        super.eat(level, stack);
         return stack;
     }
 
     public ItemStack checkFood() {
         for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             ItemStack itemstack = this.inventory.getItem(i);
-            if (itemstack.isEdible()) {
-                if ((float)itemstack.getItem().getFoodProperties().getNutrition() + this.getHealth() <= this.getMaxHealth()) {
+            if (itemstack.has(DataComponents.FOOD)) {
+                if ((float)itemstack.get(DataComponents.FOOD).nutrition() + this.getHealth() <= this.getMaxHealth()) {
                     return itemstack;
                 }
             }
@@ -558,19 +557,21 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     }
 
     public void modifyMaxHealth(int change, String name, boolean permanent) {
+        ResourceLocation location = HCUtil.modLoc(name);
+
         AttributeInstance attributeinstance = this.getAttribute(Attributes.MAX_HEALTH);
         Set<AttributeModifier> modifiers = attributeinstance.getModifiers();
         if (!modifiers.isEmpty()) {
             Iterator<AttributeModifier> iterator = modifiers.iterator();
             while (iterator.hasNext()) {
                 AttributeModifier attributeModifier = iterator.next();
-                if (attributeModifier != null && attributeModifier.getName().equals(name)) {
+                if (attributeModifier != null && attributeModifier.id().equals(location)) {
                     this.getAttribute(Attributes.MAX_HEALTH).removeModifier(attributeModifier);
                 }
             }
         }
-        AttributeModifier HEALTH_MODIFIER = new AttributeModifier(name,
-                change, AttributeModifier.Operation.ADDITION);
+        AttributeModifier HEALTH_MODIFIER = new AttributeModifier(location,
+                change, AttributeModifier.Operation.ADD_VALUE);
         if (permanent) {
             attributeinstance.addPermanentModifier(HEALTH_MODIFIER);
         } else {
@@ -613,7 +614,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     }
 
     public void release() {
-        this.setTame(false);
+        this.setTame(false, false);
         this.setOwnerUUID(null);
         setFollowing(false);
         setAlert(false);
@@ -622,7 +623,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         removeHuntingGoals();
         setPatrolPos(this.blockPosition());
         setPatrolling(true);
-        setStationery(false);
+        setStationary(false);
         setPatrolRadius(15);
         setFoodRequirements();
         if (this.isOrderedToSit()) {
@@ -631,20 +632,19 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     }
 
     public double getTotalAttackDamage(ItemStack stack) {
-        double damage = 0.0;
-        double multiplier = 1;
-        for (AttributeModifier modifier : stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE))
-        {
-            switch (modifier.getOperation()) {
-                case ADDITION -> damage += modifier.getAmount();
-                case MULTIPLY_BASE -> damage += damage * modifier.getAmount();
-                case MULTIPLY_TOTAL -> multiplier *= modifier.getAmount();
+        AtomicReference<Double> damage = new AtomicReference<>(0.0);
+        AtomicReference<Double> multiplier = new AtomicReference<>((double) 1);
+        stack.forEachModifier(EquipmentSlot.MAINHAND, (holder, modifier) -> {
+            if(holder.is(Attributes.ATTACK_DAMAGE)){
+                switch (modifier.operation()) {
+                    case ADD_VALUE -> damage.updateAndGet(v -> v + modifier.amount());
+                    case ADD_MULTIPLIED_BASE -> damage.updateAndGet(v -> v + damage.get() * modifier.amount());
+                    case ADD_MULTIPLIED_TOTAL -> multiplier.updateAndGet(v -> v * modifier.amount());
+                }
             }
+        });
 
-        }
-        double enchantment = EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
-
-        return damage * multiplier + enchantment;
+        return damage.get() * multiplier.get();
     }
 
     public void setExpLvl(int lvl) {
@@ -659,7 +659,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         this.entityData.set(PATROL_POS, Optional.ofNullable(position));
     }
 
-    @Nullable
+    
     public BlockPos getPatrolPos() {
         return this.entityData.get(PATROL_POS).orElse(null);
     }
@@ -720,8 +720,8 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         return this.entityData.get(GUARDING);
     }
 
-    public boolean isStationery() {
-        return this.entityData.get(STATIONERY);
+    public boolean isStationary() {
+        return this.entityData.get(STATIONARY);
     }
 
     public boolean isFollowing() {
@@ -748,8 +748,8 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         this.entityData.set(GUARDING, guarding);
     }
 
-    public void setStationery(boolean stationery) {
-        this.entityData.set(STATIONERY, stationery);
+    public void setStationary(boolean stationery) {
+        this.entityData.set(STATIONARY, stationery);
     }
 
     public void setFollowing(boolean following) {

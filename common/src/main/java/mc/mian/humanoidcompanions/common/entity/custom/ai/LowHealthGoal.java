@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.common.entity.custom.ai;
 
-import com.github.justinwon777.humancompanions.core.Config;
-import com.github.justinwon777.humancompanions.entity.AbstractHumanCompanionEntity;
+import mc.mian.humanoidcompanions.common.config.HCConfiguration;
+import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +17,7 @@ public class LowHealthGoal extends Goal {
     }
 
     public boolean canUse() {
-        if (Config.LOW_HEALTH_FOOD.get()) {
+        if (HCConfiguration.LOW_HEALTH_FOOD.get()) {
             if (this.mob.getHealth() < this.mob.getMaxHealth() / 2 && this.mob.isTame()) {
                 food = mob.checkFood();
                 return food.isEmpty();

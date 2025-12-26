@@ -12,7 +12,6 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import javax.annotation.Nullable;
 
 public class Knight extends AbstractHumanCompanionEntity {
 
@@ -55,8 +54,7 @@ public class Knight extends AbstractHumanCompanionEntity {
     }
 
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-                                        MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn,
-                                        @Nullable CompoundTag dataTag) {
+                                        MobSpawnType reason,  SpawnGroupData spawnDataIn) {
         if (HCConfiguration.SPAWN_WEAPON.get()) {
             ItemStack itemstack = getSpawnSword();
             if (!itemstack.isEmpty()) {
@@ -65,7 +63,7 @@ public class Knight extends AbstractHumanCompanionEntity {
             }
         }
 
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public ItemStack getSpawnSword() {

@@ -1,11 +1,9 @@
 package mc.mian.humanoidcompanions.common.entity.custom.ai;
 
-import com.github.justinwon777.humancompanions.entity.AbstractHumanCompanionEntity;
+import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;
-
-import javax.annotation.Nullable;
 
 public class PatrolGoal extends RandomStrollGoal {
 
@@ -14,15 +12,15 @@ public class PatrolGoal extends RandomStrollGoal {
     public AbstractHumanCompanionEntity companion;
     public int radius;
 
-    public PatrolGoal(AbstractHumanCompanionEntity p_25987_, int interval, int radius) {
-        this(p_25987_, 1.0D, 0.001F, interval, radius);
+    public PatrolGoal(AbstractHumanCompanionEntity companion, int interval, int radius) {
+        this(companion, 1.0D, 0.001F, interval, radius);
     }
 
-    public PatrolGoal(AbstractHumanCompanionEntity p_25990_, double p_25991_, float p_25992_, int interval,
+    public PatrolGoal(AbstractHumanCompanionEntity companion, double speedModifier, float probability, int interval,
                       int radius) {
-        super(p_25990_, p_25991_);
-        this.probability = p_25992_;
-        this.companion = p_25990_;
+        super(companion, speedModifier);
+        this.probability = probability;
+        this.companion = companion;
         this.interval = interval;
         this.radius = radius;
     }
@@ -35,7 +33,7 @@ public class PatrolGoal extends RandomStrollGoal {
         return super.canUse();
     }
 
-    @Nullable
+    
     protected Vec3 getPosition() {
         Vec3 vec = getRawPosition();
         if (vec != null) {

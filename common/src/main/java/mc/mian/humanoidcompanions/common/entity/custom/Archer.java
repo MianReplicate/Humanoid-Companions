@@ -1,5 +1,6 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
+import mc.mian.humanoidcompanions.common.config.HCConfiguration;
 import mc.mian.humanoidcompanions.common.entity.custom.ai.ArcherRangedBowAttackGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import javax.annotation.Nullable;
 
 public class Archer extends AbstractHumanCompanionEntity implements RangedAttackMob {
 
@@ -46,22 +46,20 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
     }
 
     @Override
-    public void performRangedAttack(LivingEntity p_32141_, float p_32142_) {
-        ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, item -> item instanceof BowItem)));
-        AbstractArrow abstractarrow = this.getArrow(itemstack, p_32142_);
-        if (this.getMainHandItem().getItem() instanceof BowItem)
-            abstractarrow = ((BowItem)this.getMainHandItem().getItem()).customArrow(abstractarrow);
-        double d0 = p_32141_.getX() - this.getX();
-        double d1 = p_32141_.getY(0.3333333333333333D) - abstractarrow.getY();
-        double d2 = p_32141_.getZ() - this.getZ();
+    public void performRangedAttack(LivingEntity toAttack, float velocity) {
+        ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.BOW)));
+        AbstractArrow abstractarrow = this.getArrow(itemstack, velocity);
+//        if (this.getMainHandItem().getItem() instanceof BowItem)
+//            abstractarrow = ((BowItem)this.getMainHandItem().getItem()).customArrow(abstractarrow);
+        double d0 = toAttack.getX() - this.getX();
+        double d1 = toAttack.getY(0.3333333333333333D) - abstractarrow.getY();
+        double d2 = toAttack.getZ() - this.getZ();
         double d3 = Math.sqrt(d0 * d0 + d2 * d2);
         abstractarrow.shoot(d0, d1 + d3 * (double)0.20F, d2, 1.6F, (float)(this.level().getDifficulty().getId() * 3));
         this.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         this.level().addFreshEntity(abstractarrow);
         if (!this.level().isClientSide) {
-            this.getMainHandItem().hurtAndBreak(1, this, (p_43296_) -> {
-                p_43296_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-            });
+            this.getMainHandItem().hurtAndBreak(1, this, EquipmentSlot.MAINHAND);
             if (this.getMainHandItem().isEmpty()) {
                 MutableComponent broken = Component.literal("My bow broke!");
                 if (this.isTame()) {
@@ -72,8 +70,8 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
         }
     }
 
-    protected AbstractArrow getArrow(ItemStack p_32156_, float p_32157_) {
-        return ProjectileUtil.getMobArrow(this, p_32156_, p_32157_);
+    protected AbstractArrow getArrow(ItemStack arrow, float velocity) {
+        return ProjectileUtil.getMobArrow(this, arrow, velocity, null);
     }
 
     public void readAdditionalSaveData(CompoundTag tag) {
@@ -83,12 +81,11 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
     }
 
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-                                        MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn,
-                                        @Nullable CompoundTag dataTag) {
-        if (Config.SPAWN_WEAPON.get()) {
+                                        MobSpawnType reason,  SpawnGroupData spawnDataIn) {
+        if (HCConfiguration.SPAWN_WEAPON.get()) {
             this.inventory.setItem(4, Items.BOW.getDefaultInstance());
             checkBow();
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 }

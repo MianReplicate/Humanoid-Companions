@@ -1,6 +1,6 @@
 package mc.mian.humanoidcompanions.common.entity.custom.ai;
 
-import com.github.justinwon777.humancompanions.entity.AbstractHumanCompanionEntity;
+import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 
 public class CustomWaterAvoidingRandomStrollGoal extends WaterAvoidingRandomStrollGoal {

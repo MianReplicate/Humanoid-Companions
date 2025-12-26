@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
-import com.github.justinwon777.humancompanions.core.Config;
-import com.github.justinwon777.humancompanions.entity.ai.ArbalistRangedCrossbowAttackGoal;
+import mc.mian.humanoidcompanions.common.config.HCConfiguration;
+import mc.mian.humanoidcompanions.common.entity.custom.ai.ArbalistRangedCrossbowAttackGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,7 +14,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAttackMob {
@@ -28,9 +27,9 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(IS_CHARGING_CROSSBOW, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_CHARGING_CROSSBOW, false);
     }
 
     public void checkCrossbow() {
@@ -57,9 +56,9 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
     }
 
 
-    public void shootCrossbowProjectile(LivingEntity p_33275_, ItemStack p_33276_, Projectile p_33277_, float p_33278_) {
-        this.shootCrossbowProjectile(this, p_33275_, p_33277_, p_33278_, 1.6F);
-    }
+//    public void shootCrossbowProjectile(LivingEntity entity, ItemStack stack, Projectile projectile, float p_33278_) {
+//        this.shootCrossbowProjectile(this, entity, projectile, p_33278_, 1.6F);
+//    }
 
     public void setChargingCrossbow(boolean p_33302_) {
         this.entityData.set(IS_CHARGING_CROSSBOW, p_33302_);
@@ -80,13 +79,12 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
     }
 
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-                                        MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn,
-                                        @Nullable CompoundTag dataTag) {
-        if (Config.SPAWN_WEAPON.get()) {
+                                        MobSpawnType reason,  SpawnGroupData spawnDataIn) {
+        if (HCConfiguration.SPAWN_WEAPON.get()) {
             this.inventory.setItem(4, Items.CROSSBOW.getDefaultInstance());
             checkCrossbow();
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public ItemStack getProjectile(ItemStack p_33038_) {

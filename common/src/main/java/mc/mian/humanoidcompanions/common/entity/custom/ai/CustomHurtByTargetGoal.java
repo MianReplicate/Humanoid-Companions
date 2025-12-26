@@ -3,9 +3,8 @@ package mc.mian.humanoidcompanions.common.entity.custom.ai;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.Nullable;
 
-import com.github.justinwon777.humancompanions.entity.AbstractHumanCompanionEntity;
+import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,7 +22,7 @@ public class CustomHurtByTargetGoal extends TargetGoal {
     /** Store the previous revengeTimer value */
     private int timestamp;
     private final Class<?>[] toIgnoreDamage;
-    @Nullable
+    
     private Class<?>[] toIgnoreAlert;
 
     public CustomHurtByTargetGoal(PathfinderMob pMob, Class<?>... pToIgnoreDamage) {

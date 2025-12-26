@@ -1,11 +1,12 @@
 package mc.mian.humanoidcompanions.common.entity.custom.ai;
 
-import com.github.justinwon777.humancompanions.entity.AbstractHumanCompanionEntity;
+import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Items;
 
 import java.util.EnumSet;
 
@@ -78,7 +79,7 @@ public class ArcherRangedBowAttackGoal<T extends AbstractHumanCompanionEntity & 
                 --this.seeTime;
             }
 
-            if (this.mob.isStationery() && this.mob.isGuarding()) {
+            if (this.mob.isStationary() && this.mob.isGuarding()) {
                 this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
                 if (!flag || d0 > (double) this.attackRadiusSqr) {
                     this.mob.clearTarget();
@@ -131,7 +132,7 @@ public class ArcherRangedBowAttackGoal<T extends AbstractHumanCompanionEntity & 
                     }
                 }
             } else if (--this.attackTime <= 0 && this.seeTime >= -60) {
-                this.mob.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.mob, item -> item instanceof BowItem));
+                this.mob.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.mob, Items.BOW));
             }
 
         }

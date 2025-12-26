@@ -2,7 +2,7 @@ package mc.mian.humanoidcompanions.common.entity.custom.ai;
 
 import java.util.EnumSet;
 
-import com.github.justinwon777.humancompanions.core.Config;
+import mc.mian.humanoidcompanions.common.config.HCConfiguration;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
@@ -33,7 +33,7 @@ public class CustomOwnerHurtTargetGoal extends TargetGoal {
                         LivingEntity owner1 = ((TamableAnimal) this.ownerLastHurt).getOwner();
                         LivingEntity owner2 = this.tameAnimal.getOwner();
                         if (owner1 == owner2) {
-                            if (!Config.FRIENDLY_FIRE_COMPANIONS.get()) {
+                            if (!HCConfiguration.FRIENDLY_FIRE_COMPANIONS.get()) {
                                 return false;
                             }
                         }
