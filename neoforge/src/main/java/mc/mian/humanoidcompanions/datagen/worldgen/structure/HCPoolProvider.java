@@ -41,17 +41,6 @@ public class HCPoolProvider {
                         ),
                         StructureTemplatePool.Projection.RIGID
                 ));
-        context.register(HCKeys.COMPANIONS,
-                new StructureTemplatePool(
-                        emptyHolder,
-                        ImmutableList.of(
-                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/knight"), 1),
-                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/archer"), 1),
-                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/arbalist"), 1),
-                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/axeguard"), 1)
-                        ),
-                        StructureTemplatePool.Projection.RIGID
-                ));
         context.register(HCKeys.DARK_OAK_POOL,
                 new StructureTemplatePool(
                         emptyHolder,

@@ -29,8 +29,4 @@ public class HCItems {
     public static final RegistrySupplier<SpawnEggItem> KNIGHT_SPAWN_EGG = ITEMS.register("knight_spawn_egg",
             () -> new SpawnEggItem(HCEntities.KNIGHT.get(),0xE8AF5A, 0xFFFF00,
                     new Item.Properties().stacksTo(64)));
-
-    public static RegistrySupplier<Item> registerItem(String name, Function<Item.Properties, Item> itemFunc){
-        return ITEMS.register(name, () -> itemFunc.apply(new Item.Properties()));
-    }
 }

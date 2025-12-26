@@ -26,7 +26,6 @@ public class HCKeys {
 
     public static final ResourceKey<StructureTemplatePool> ACACIA_POOL = createPool(HCUtil.modLoc("acacia_pool"));
     public static final ResourceKey<StructureTemplatePool> BIRCH_POOL = createPool(HCUtil.modLoc("birch_pool"));
-    public static final ResourceKey<StructureTemplatePool> COMPANIONS = createPool(HCUtil.modLoc("companions"));
     public static final ResourceKey<StructureTemplatePool> DARK_OAK_POOL = createPool(HCUtil.modLoc("dark_oak_pool"));
     public static final ResourceKey<StructureTemplatePool> OAK_BIRCH_POOL = createPool(HCUtil.modLoc("oak_birch_pool"));
     public static final ResourceKey<StructureTemplatePool> OAK_POOL = createPool(HCUtil.modLoc("oak_pool"));

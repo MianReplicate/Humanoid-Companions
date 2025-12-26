@@ -32,22 +32,12 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
         builder.define(IS_CHARGING_CROSSBOW, false);
     }
 
-    public void checkCrossbow() {
-        ItemStack hand = this.getItemBySlot(EquipmentSlot.MAINHAND);
-        for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
-            ItemStack itemstack = this.inventory.getItem(i);
-            if (itemstack.getItem() instanceof CrossbowItem) {
-                if (hand.isEmpty()) {
-                    this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
-                }
-            }
-        }
+    @Override
+    public boolean isValidWeapon(ItemStack stack) {
+        return stack.getItem() instanceof CrossbowItem;
     }
 
     public void tick() {
-        if (!this.level().isClientSide()) {
-            checkCrossbow();
-        }
         super.tick();
     }
 
@@ -75,16 +65,11 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-        checkCrossbow();
     }
 
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-                                        MobSpawnType reason,  SpawnGroupData spawnDataIn) {
-        if (HCConfiguration.SPAWN_WEAPON.get()) {
-            this.inventory.setItem(4, Items.CROSSBOW.getDefaultInstance());
-            checkCrossbow();
-        }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
+    @Override
+    public ItemStack getSpawnWeapon() {
+        return Items.CROSSBOW.getDefaultInstance();
     }
 
     public ItemStack getProjectile(ItemStack p_33038_) {

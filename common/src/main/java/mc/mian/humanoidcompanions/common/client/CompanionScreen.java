@@ -34,59 +34,59 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
     private static final ResourceLocation CONTAINER_BACKGROUND = HCUtil.modLoc(
         "textures/inventory.png");
     private static final WidgetSprites ALERT_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/alert/enabled.png"),
-            HCUtil.modLoc( "textures/alert/disabled.png"),
-            HCUtil.modLoc( "textures/alert/enabled_focused.png"),
-            HCUtil.modLoc( "textures/alert/disabled_focused.png")
+            HCUtil.modLoc( "widget/alert/enabled"),
+            HCUtil.modLoc( "widget/alert/disabled"),
+            HCUtil.modLoc( "widget/alert/enabled_focused"),
+            HCUtil.modLoc( "widget/alert/disabled_focused")
     );
 
     private static final WidgetSprites HUNTING_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/hunting/enabled.png"),
-            HCUtil.modLoc( "textures/hunting/disabled.png"),
-            HCUtil.modLoc( "textures/hunting/enabled_focused.png"),
-            HCUtil.modLoc( "textures/hunting/disabled_focused.png")
+            HCUtil.modLoc( "widget/hunting/enabled"),
+            HCUtil.modLoc( "widget/hunting/disabled"),
+            HCUtil.modLoc( "widget/hunting/enabled_focused"),
+            HCUtil.modLoc( "widget/hunting/disabled_focused")
     );
 
     private static final WidgetSprites STATIONARY_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/stationary/enabled.png"),
-            HCUtil.modLoc( "textures/stationary/disabled.png"),
-            HCUtil.modLoc( "textures/stationary/enabled_focused.png"),
-            HCUtil.modLoc( "textures/stationary/disabled_focused.png")
+            HCUtil.modLoc( "widget/stationary/enabled"),
+            HCUtil.modLoc( "widget/stationary/disabled"),
+            HCUtil.modLoc( "widget/stationary/enabled_focused"),
+            HCUtil.modLoc( "widget/stationary/disabled_focused")
     );
 
     private static final WidgetSprites CLEAR_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/clear/enabled.png"),
-            HCUtil.modLoc( "textures/clear/enabled_focused.png")
+            HCUtil.modLoc( "widget/clear/enabled"),
+            HCUtil.modLoc( "widget/clear/enabled_focused")
     );
 
     private static final WidgetSprites RELEASE_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/release/enabled.png"),
-            HCUtil.modLoc( "textures/release/enabled_focused.png")
+            HCUtil.modLoc( "widget/release/enabled"),
+            HCUtil.modLoc( "widget/release/enabled_focused")
     );
 
     private static final WidgetSprites PATROL_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/patrol/enabled.png"),
-            HCUtil.modLoc( "textures/patrol/enabled_focused.png")
+            HCUtil.modLoc( "widget/patrol/enabled"),
+            HCUtil.modLoc( "widget/patrol/enabled_focused")
     );
 
     private static final WidgetSprites GUARD_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/guard/enabled.png"),
-            HCUtil.modLoc( "textures/guard/enabled_focused.png")
+            HCUtil.modLoc( "widget/guard/enabled"),
+            HCUtil.modLoc( "widget/guard/enabled_focused")
     );
 
     private static final WidgetSprites FOLLOW_SPRITES = new WidgetSprites(
-            HCUtil.modLoc( "textures/follow/enabled.png"),
-            HCUtil.modLoc( "textures/follow/enabled_focused.png")
+            HCUtil.modLoc( "widget/follow/enabled"),
+            HCUtil.modLoc( "widget/follow/enabled_focused")
     );
 
     private final int containerRows;
     private final AbstractHumanCompanionEntity companion;
-    private CompanionButton alertButton;
-    private CompanionButton huntingButton;
-    private CompanionButton patrolButton;
-    private CompanionButton clearButton;
-    private CompanionButton stationaryButton;
-    private CompanionButton releaseButton;
+    private ImageButton alertButton;
+    private ImageButton huntingButton;
+    private ImageButton patrolButton;
+    private ImageButton clearButton;
+    private ImageButton stationaryButton;
+    private ImageButton releaseButton;
     DecimalFormat df = new DecimalFormat("#.#");
     int sidebarx;
     int rowHeight;
@@ -150,7 +150,7 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
                 btn -> {
                     Network.getNetworkHandler().sendToServer(new SetHuntingPacket(companion.getId()));
                 }));
-        this.patrolButton = addRenderableWidget(new WidgetSetCompanionButton(
+        this.patrolButton = addRenderableWidget(new DynamicWidgetCompanionButton(
                 () -> true,
                 col1,
                 row2,
@@ -176,13 +176,13 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
                         Network.getNetworkHandler().sendToServer(new SetStationaryPacket(companion.getId()));
                     }));
         }
-        this.clearButton = addRenderableWidget(new CompanionButton(() -> true, leftPos + sidebarx + 5, row3, 31,
+        this.clearButton = addRenderableWidget(new ImageButton(leftPos + sidebarx + 5, row3, 31,
                 12,
                 CLEAR_SPRITES,
                 btn -> {
                     Network.getNetworkHandler().sendToServer(new ClearTargetPacket(companion.getId()));
                 }));
-        this.releaseButton = addRenderableWidget(new CompanionButton(() -> true, leftPos + sidebarx + 3, topPos + 148,
+        this.releaseButton = addRenderableWidget(new ImageButton(leftPos + sidebarx + 3, topPos + 148,
                 34,
                 12,
                 RELEASE_SPRITES,
@@ -295,10 +295,10 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
         }
     }
 
-    static class WidgetSetCompanionButton extends CompanionButton {
+    static class DynamicWidgetCompanionButton extends CompanionButton {
         private final Supplier<WidgetSprites> widgetSupplier;
 
-        public WidgetSetCompanionButton(Supplier<Boolean> isActiveSupplier, int x, int y, int width, int height, Supplier<WidgetSprites> widgetSupplier, Button.OnPress onPress){
+        public DynamicWidgetCompanionButton(Supplier<Boolean> isActiveSupplier, int x, int y, int width, int height, Supplier<WidgetSprites> widgetSupplier, Button.OnPress onPress){
             super(isActiveSupplier, x, y, width, height, null, onPress);
 
             this.widgetSupplier = widgetSupplier;
@@ -306,7 +306,7 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
 
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-            ResourceLocation resourcelocation = widgetSupplier.get().get(this.isActive(), this.isHoveredOrFocused());
+            ResourceLocation resourcelocation = widgetSupplier.get().get(this.isActive(), this.isHovered());
             guiGraphics.blitSprite(resourcelocation, this.getX(), this.getY(), this.width, this.height);
         }
     }
@@ -323,6 +323,12 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
         @Override
         public boolean isActive() {
             return super.isActive() && this.isActiveSupplier.get();
+        }
+
+        @Override
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            ResourceLocation resourcelocation = this.sprites.get(this.isActive(), this.isHovered());
+            guiGraphics.blitSprite(resourcelocation, this.getX(), this.getY(), this.width, this.height);
         }
     }
 }

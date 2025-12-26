@@ -44,7 +44,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class AbstractHumanCompanionEntity extends TamableAnimal {
+public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
+
+    private static final ResourceLocation BASE_HEALTH_LOC = HCUtil.modLoc("base_health");
+    private static final ResourceLocation LEVEL_HEALTH_LOC = HCUtil.modLoc("level_health");
 
     private static final EntityDataAccessor<Integer> DATA_TYPE_ID = SynchedEntityData.defineId(AbstractHumanCompanionEntity.class,
             EntityDataSerializers.INT);
@@ -161,7 +164,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
                                         MobSpawnType reason, SpawnGroupData spawnDataIn) {
         int baseHealth = HCConfiguration.BASE_HEALTH.get() + CompanionData.getHealthModifier();
-        modifyMaxHealth(baseHealth - 20, "companion base health", true);
+        modifyMaxHealth(baseHealth - 20, BASE_HEALTH_LOC, true);
         this.setHealth(this.getMaxHealth());
         setBaseHealth(baseHealth);
         setSex(this.random.nextInt(2));
@@ -186,6 +189,15 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             }
             checkArmor();
         }
+
+        if (HCConfiguration.SPAWN_WEAPON.get()) {
+            ItemStack itemstack = getSpawnWeapon();
+            if (!itemstack.isEmpty()) {
+                this.inventory.setItem(4, itemstack);
+                checkWeapon(null, null);
+            }
+        }
+
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
@@ -266,6 +278,9 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         this.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
         this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         checkArmor();
+
+        this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        checkWeapon(null, null);
     }
 
     @Override
@@ -423,6 +438,28 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         }
     }
 
+    public abstract boolean isValidWeapon(ItemStack stack);
+
+    public DamageSource generateDamageSource(LivingEntity target){
+        return target.damageSources().mobAttack(this);
+    }
+
+    public void checkWeapon(LivingEntity target, DamageSource source){
+        ItemStack hand = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
+            ItemStack itemstack = this.inventory.getItem(i);
+            if (isValidWeapon(itemstack)) {
+                if (hand.isEmpty()) {
+                    this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
+                } else if (isValidWeapon(hand)) {
+                    if (getTotalAttackDamage(itemstack, target, source) > getTotalAttackDamage(hand, target, source)) {
+                        this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
+                    }
+                }
+            }
+        }
+    }
+
     public boolean hurt(DamageSource source, float amount) {
         if (source.getEntity() == this.getOwner() && !HCConfiguration.FRIENDLY_FIRE_PLAYER.get()) {
             return false;
@@ -481,7 +518,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         if (stack.has(DataComponents.FOOD)) {
             this.heal(foodProperties.nutrition());
         }
-        super.eat(level, stack);
+        super.eat(level, stack, foodProperties);
         return stack;
     }
 
@@ -499,6 +536,14 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
 
     public void clearTarget() {
         this.setTarget(null);
+    }
+
+    @Override
+    public void setTarget(LivingEntity target){
+        super.setTarget(target);
+        if(target != null){
+            checkWeapon(target, generateDamageSource(target));
+        }
     }
 
     public void giveExperiencePoints(int pXpPoints) {
@@ -556,9 +601,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         }
     }
 
-    public void modifyMaxHealth(int change, String name, boolean permanent) {
-        ResourceLocation location = HCUtil.modLoc(name);
-
+    public void modifyMaxHealth(int change, ResourceLocation location, boolean permanent) {
         AttributeInstance attributeinstance = this.getAttribute(Attributes.MAX_HEALTH);
         Set<AttributeModifier> modifiers = attributeinstance.getModifiers();
         if (!modifiers.isEmpty()) {
@@ -582,7 +625,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     public void checkStats() {
         if ((int) this.getMaxHealth() != getBaseHealth() + (getExpLvl() / 3)) {
             if (getExpLvl() / 3 != 0) {
-                modifyMaxHealth(getExpLvl() / 3, "companion level health", false);
+                modifyMaxHealth(getExpLvl() / 3, LEVEL_HEALTH_LOC, false);
             }
         }
     }
@@ -590,6 +633,9 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
     public void tick() {
         if (!this.level().isClientSide()) {
             checkArmor();
+            if(this.getTarget() == null){
+                checkWeapon(null, null);
+            }
             if (this.tickCount % 10 == 0) {
                 checkStats();
                 LivingEntity target = this.getTarget();
@@ -631,7 +677,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         }
     }
 
-    public double getTotalAttackDamage(ItemStack stack) {
+    public double getTotalAttackDamage(ItemStack stack, LivingEntity target, DamageSource source) {
         AtomicReference<Double> damage = new AtomicReference<>(0.0);
         AtomicReference<Double> multiplier = new AtomicReference<>((double) 1);
         stack.forEachModifier(EquipmentSlot.MAINHAND, (holder, modifier) -> {
@@ -644,7 +690,9 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             }
         });
 
-        return damage.get() * multiplier.get();
+        float actualDamage = target == null || source == null ? damage.get().floatValue() : EnchantmentHelper.modifyDamage((ServerLevel) this.level(), stack, target, source, damage.get().floatValue());
+
+        return actualDamage * multiplier.get();
     }
 
     public void setExpLvl(int lvl) {
@@ -780,4 +828,5 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         }
     }
 
+    public abstract ItemStack getSpawnWeapon();
 }

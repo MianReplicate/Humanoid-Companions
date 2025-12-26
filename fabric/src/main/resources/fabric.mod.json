@@ -16,10 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "mc.mian.templatemod.fabric.TemplateModFabric"
+      "mc.mian.humanoidcompanions.fabric.HCFabric"
     ],
     "client": [
-      "mc.mian.templatemod.fabric.TemplateModFabricClient"
+      "mc.mian.humanoidcompanions.fabric.HCFabricClient"
     ]
   },
   "mixins": [
