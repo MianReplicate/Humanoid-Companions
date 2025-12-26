@@ -6,13 +6,16 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class TemplateItemModelProvider extends ItemModelProvider {
-    public TemplateItemModelProvider(PackOutput output, ExistingFileHelper efh) {
+public class HCItemModelProvider extends ItemModelProvider {
+    public HCItemModelProvider(PackOutput output, ExistingFileHelper efh) {
         super(output, HCConstants.MOD_ID, efh);
     }
 
     @Override
     protected void registerModels() {
-        basicItem(HCItems.TEMPLATE_ITEM.get());
+        spawnEggItem(HCItems.ARBALIST_SPAWN_EGG.get());
+        spawnEggItem(HCItems.KNIGHT_SPAWN_EGG.get());
+        spawnEggItem(HCItems.ARCHER_SPAWN_EGG.get());
+        spawnEggItem(HCItems.AXE_GUARD_SPAWN_EGG.get());
     }
 }

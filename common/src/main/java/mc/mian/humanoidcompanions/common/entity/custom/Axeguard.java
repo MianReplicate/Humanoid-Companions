@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
 import mc.mian.humanoidcompanions.common.config.HCConfiguration;
-import mc.mian.humanoidcompanions.common.tag.HCTags;
+import mc.mian.humanoidcompanions.common.key.HCKeys;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -21,7 +21,7 @@ public class Axeguard extends AbstractHumanCompanionEntity {
     }
 
     public boolean isAxe(ItemStack stack) {
-    	return stack.is(HCTags.AXES) || (!stack.is(HCTags.SWORDS) && stack.getItem() instanceof AxeItem);
+    	return stack.is(HCKeys.AXES) || (!stack.is(HCKeys.SWORDS) && stack.getItem() instanceof AxeItem);
     }
     
     public void checkAxe() {

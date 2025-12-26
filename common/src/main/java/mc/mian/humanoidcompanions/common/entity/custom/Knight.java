@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
 import mc.mian.humanoidcompanions.common.config.HCConfiguration;
-import mc.mian.humanoidcompanions.common.tag.HCTags;
+import mc.mian.humanoidcompanions.common.key.HCKeys;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -21,7 +21,7 @@ public class Knight extends AbstractHumanCompanionEntity {
     }
 
     public boolean isSword(ItemStack stack) {
-    	return stack.is(HCTags.SWORDS) || (!stack.is(HCTags.AXES) && stack.getItem() instanceof SwordItem);
+    	return stack.is(HCKeys.SWORDS) || (!stack.is(HCKeys.AXES) && stack.getItem() instanceof SwordItem);
     }
 
     public void checkSword() {

@@ -27,16 +27,26 @@ public class HCDataGenerators {
         addVirtualPackContents(efh);
 
         if (ev.includeServer()) {
-            gen.addProvider(ev.includeServer(), new TemplateLangProvider(packOutput));
-            gen.addProvider(ev.includeServer(), new TemplateItemModelProvider(packOutput, efh));
-            gen.addProvider(ev.includeServer(), new TemplateStateAndModelProvider(packOutput, efh));
-            gen.addProvider(ev.includeServer(), new TemplateBootstrapProvider(packOutput, provider));
+            gen.addProvider(ev.includeServer(), new HCLangProvider(packOutput));
+            gen.addProvider(ev.includeServer(), new HCItemModelProvider(packOutput, efh));
+            gen.addProvider(ev.includeServer(), new HCItemTagsProvider(packOutput, provider));
+            gen.addProvider(ev.includeServer(), new HCBiomeTagsProvider(packOutput, provider));
+            gen.addProvider(ev.includeServer(), new HCWorldGenProvider(packOutput, provider));
         }
     }
 
     private static void addVirtualPackContents(ExistingFileHelper existingFileHelper) {
         existingFileHelper.trackGenerated(
-                HCUtil.modLoc(HCItems.TEMPLATE_ITEM.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_ITEM_PREFIX
+                HCUtil.modLoc(HCItems.AXE_GUARD_SPAWN_EGG.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_ITEM_PREFIX
+        );
+        existingFileHelper.trackGenerated(
+                HCUtil.modLoc(HCItems.ARCHER_SPAWN_EGG.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_ITEM_PREFIX
+        );
+        existingFileHelper.trackGenerated(
+                HCUtil.modLoc(HCItems.ARBALIST_SPAWN_EGG.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_ITEM_PREFIX
+        );
+        existingFileHelper.trackGenerated(
+                HCUtil.modLoc(HCItems.KNIGHT_SPAWN_EGG.getId().getPath()), PackType.CLIENT_RESOURCES, PATH_SUFFIX, PATH_ITEM_PREFIX
         );
     }
 }
