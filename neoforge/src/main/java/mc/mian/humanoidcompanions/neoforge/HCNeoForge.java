@@ -3,7 +3,7 @@ package mc.mian.humanoidcompanions.neoforge;
 import fuzs.forgeconfigapiport.neoforge.api.forge.v4.ForgeConfigRegistry;
 import mc.mian.humanoidcompanions.HumanoidCompanions;
 import mc.mian.humanoidcompanions.common.config.ConfigHolder;
-import mc.mian.humanoidcompanions.datagen.TemplateDataGenerators;
+import mc.mian.humanoidcompanions.datagen.HCDataGenerators;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -22,6 +22,6 @@ public class HCNeoForge {
 
         HumanoidCompanions.init();
 
-        modEventBus.register(TemplateDataGenerators.class);
+        modEventBus.register(HCDataGenerators.class);
     }
 }

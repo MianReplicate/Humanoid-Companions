@@ -6,11 +6,12 @@ import mc.mian.humanoidcompanions.common.entity.custom.Archer;
 import mc.mian.humanoidcompanions.common.entity.custom.Axeguard;
 import mc.mian.humanoidcompanions.common.entity.custom.Knight;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 public class HCEvents {
-    @net.minecraftforge.fml.common.Mod.EventBusSubscriber(modid = HCConstants.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = HCConstants.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     public static class Mod{
         @SubscribeEvent
         public static void registerAttributes(EntityAttributeCreationEvent event) {

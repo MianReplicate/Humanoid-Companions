@@ -64,8 +64,20 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
             HCUtil.modLoc( "textures/release/enabled_focused.png")
     );
 
-    private static final ResourceLocation PATROL_BUTTON = HCUtil.modLoc( "textures" +
-            "/patrolbutton.png");
+    private static final WidgetSprites PATROL_SPRITES = new WidgetSprites(
+            HCUtil.modLoc( "textures/patrol/enabled.png"),
+            HCUtil.modLoc( "textures/patrol/enabled_focused.png")
+    );
+
+    private static final WidgetSprites GUARD_SPRITES = new WidgetSprites(
+            HCUtil.modLoc( "textures/guard/enabled.png"),
+            HCUtil.modLoc( "textures/guard/enabled_focused.png")
+    );
+
+    private static final WidgetSprites FOLLOW_SPRITES = new WidgetSprites(
+            HCUtil.modLoc( "textures/follow/enabled.png"),
+            HCUtil.modLoc( "textures/follow/enabled_focused.png")
+    );
 
     private final int containerRows;
     private final AbstractHumanCompanionEntity companion;
@@ -130,7 +142,7 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
                 ALERT_SPRITES,
                 btn -> {
                     Network.getNetworkHandler().sendToServer(new SetAlertPacket(companion.getId()));
-        }));
+                }));
         this.huntingButton = addRenderableWidget(new CompanionButton(this.companion::isHunting, col2, row1,
                 16,
                 12,
@@ -138,15 +150,22 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
                 btn -> {
                     Network.getNetworkHandler().sendToServer(new SetHuntingPacket(companion.getId()));
                 }));
-//        this.patrolButton = addRenderableWidget(new CompanionButton("patrolling", col1, row2,
-//                16,
-//                12,
-//                0, 0
-//                ,13,
-//                PATROL_BUTTON,
-//                btn -> {
-//                    Network.getNetworkHandler().sendToServer(new SetPatrollingPacket(companion.getId()));
-//                }));
+        this.patrolButton = addRenderableWidget(new WidgetSetCompanionButton(
+                () -> true,
+                col1,
+                row2,
+                16,
+                12,
+                () -> {
+                    if (companion.isGuarding())
+                        return GUARD_SPRITES;
+                    if (companion.isPatrolling())
+                        return PATROL_SPRITES;
+                    return FOLLOW_SPRITES;
+                },
+                btn -> {
+                    Network.getNetworkHandler().sendToServer(new SetPatrollingPacket(companion.getId()));
+                }));
         if (companion instanceof Archer || companion instanceof Arbalist) {
             this.stationaryButton = addRenderableWidget(new CompanionButton(this.companion::isStationary, col2,
                     row2,
@@ -276,7 +295,23 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
         }
     }
 
-    class CompanionButton extends ImageButton {
+    static class WidgetSetCompanionButton extends CompanionButton {
+        private final Supplier<WidgetSprites> widgetSupplier;
+
+        public WidgetSetCompanionButton(Supplier<Boolean> isActiveSupplier, int x, int y, int width, int height, Supplier<WidgetSprites> widgetSupplier, Button.OnPress onPress){
+            super(isActiveSupplier, x, y, width, height, null, onPress);
+
+            this.widgetSupplier = widgetSupplier;
+        }
+
+        @Override
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            ResourceLocation resourcelocation = widgetSupplier.get().get(this.isActive(), this.isHoveredOrFocused());
+            guiGraphics.blitSprite(resourcelocation, this.getX(), this.getY(), this.width, this.height);
+        }
+    }
+
+    static class CompanionButton extends ImageButton {
 
         private Supplier<Boolean> isActiveSupplier;
 
@@ -289,41 +324,5 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
         public boolean isActive() {
             return super.isActive() && this.isActiveSupplier.get();
         }
-
-//        @Override
-//        public void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-//            this.sprites.get(this.isActive(), this.isFocused())
-//
-//            if (this.name.equals("alert")) {
-//                if (CompanionScreen.this.companion.isAlert()) {
-//                    this.setX(0);
-//                } else {
-//                    this.setX(17);
-//                }
-//            } else if (this.name.equals("hunting")) {
-//                if (CompanionScreen.this.companion.isHunting()) {
-//                    this.setX(0);
-//                } else {
-//                    this.setX(17);
-//                }
-//            } else if (this.name.equals("patrolling")) {
-//                if (CompanionScreen.this.companion.isFollowing()) {
-//                    this.setX(0);
-//                } else if (CompanionScreen.this.companion.isPatrolling()){
-//                    this.setX(17);
-//                } else {
-//                    this.setX(34);
-//                }
-//            } else if (this.name.equals("stationery")) {
-//                if (CompanionScreen.this.companion.isStationery()) {
-//                    this.setX(0);
-//                } else {
-//                    this.setX(17);
-//                }
-//            }
-//            RenderSystem.enableBlend();
-//            super.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-//            RenderSystem.disableBlend();
-//        }
     }
 }
