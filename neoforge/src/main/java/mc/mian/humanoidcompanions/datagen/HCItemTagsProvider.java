@@ -1,13 +1,8 @@
 package mc.mian.humanoidcompanions.datagen;
 
 import mc.mian.humanoidcompanions.common.key.HCKeys;
-import mc.mian.humanoidcompanions.common.util.HCConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;

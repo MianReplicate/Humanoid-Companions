@@ -6,7 +6,7 @@ import mc.mian.humanoidcompanions.common.item.HCItems;
 import mc.mian.humanoidcompanions.common.config.HCConfiguration;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
 
-// TODO: convert to DATAGEN
+// TODO: convert literals to translatables
 public class HumanoidCompanions {
     public static void init() {
         HCConstants.LOGGER.info("I LOVE PEOPLE!");
