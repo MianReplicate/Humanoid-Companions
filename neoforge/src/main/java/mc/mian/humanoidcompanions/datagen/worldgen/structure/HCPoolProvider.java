@@ -119,5 +119,16 @@ public class HCPoolProvider {
                         ),
                         StructureTemplatePool.Projection.RIGID
                 ));
+        context.register(HCKeys.COMPANION_POOL,
+                new StructureTemplatePool(
+                        emptyHolder,
+                        ImmutableList.of(
+                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/knight"), 2),
+                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/archer"), 2),
+                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/arbalist"), 1),
+                                Pair.of(StructurePoolElement.single("humanoidcompanions:companions/axeguard"), 1)
+                        ),
+                        StructureTemplatePool.Projection.RIGID
+                ));
     }
 }

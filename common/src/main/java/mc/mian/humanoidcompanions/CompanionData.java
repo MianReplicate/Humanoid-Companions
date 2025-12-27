@@ -1,6 +1,10 @@
 package mc.mian.humanoidcompanions;
 
 import mc.mian.humanoidcompanions.common.util.HCUtil;
+import mc.mian.humanoidcompanions.platform.Services;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -13,50 +17,53 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.List;
 import java.util.Random;
 
 public class CompanionData {
 
     public static Random rand = new Random();
 
-    public static Item[] ALL_FOODS = new Item[] {
-//            Items.CAKE,
-            Items.COOKIE,
-            Items.BREAD,
-//            Items.PUMPKIN_PIE, this has a bug apparently
-//            Items.GOLDEN_APPLE,
-//            Items.ENCHANTED_GOLDEN_APPLE,
-//            Items.MELON,
-            Items.MELON_SLICE,
-            Items.APPLE,
-//            Items.GLOW_BERRIES,
-            Items.SWEET_BERRIES,
-//            Items.CHORUS_FRUIT,
-//            Items.GOLDEN_CARROT,
-//            Items.BEETROOT,
-            Items.CARROT,
-            Items.POTATO,
-            Items.BAKED_POTATO,
-//            Items.DRIED_KELP,
-//            Items.MUSHROOM_STEW,
-//            Items.BEETROOT_SOUP,
-            Items.COOKED_SALMON,
-            Items.COOKED_COD,
-            Items.SALMON,
-            Items.COD,
-//            Items.TROPICAL_FISH,
-            Items.COOKED_MUTTON,
-            Items.COOKED_PORKCHOP,
-            Items.COOKED_BEEF,
-            Items.COOKED_CHICKEN,
-            Items.COOKED_RABBIT,
-//            Items.MUTTON,
-//            Items.PORKCHOP,
-//            Items.BEEF,
-//            Items.CHICKEN,
-//            Items.RABBIT,
-//            Items.RABBIT_STEW
-    };
+    public static List<Item> CACHED_FOODS;
+//
+//    public static Item[] ALL_FOODS = new Item[] {
+////            Items.CAKE,
+//            Items.COOKIE,
+//            Items.BREAD,
+////            Items.PUMPKIN_PIE, this has a bug apparently
+////            Items.GOLDEN_APPLE,
+////            Items.ENCHANTED_GOLDEN_APPLE,
+////            Items.MELON,
+//            Items.MELON_SLICE,
+//            Items.APPLE,
+////            Items.GLOW_BERRIES,
+//            Items.SWEET_BERRIES,
+////            Items.CHORUS_FRUIT,
+////            Items.GOLDEN_CARROT,
+////            Items.BEETROOT,
+//            Items.CARROT,
+//            Items.POTATO,
+//            Items.BAKED_POTATO,
+////            Items.DRIED_KELP,
+////            Items.MUSHROOM_STEW,
+////            Items.BEETROOT_SOUP,
+//            Items.COOKED_SALMON,
+//            Items.COOKED_COD,
+//            Items.SALMON,
+//            Items.COD,
+////            Items.TROPICAL_FISH,
+//            Items.COOKED_MUTTON,
+//            Items.COOKED_PORKCHOP,
+//            Items.COOKED_BEEF,
+//            Items.COOKED_CHICKEN,
+//            Items.COOKED_RABBIT,
+////            Items.MUTTON,
+////            Items.PORKCHOP,
+////            Items.BEEF,
+////            Items.CHICKEN,
+////            Items.RABBIT,
+////            Items.RABBIT_STEW
+//    };
 
     public static MutableComponent[] tameFail = new MutableComponent[]{
             Component.literal("I need more food."),
@@ -315,4 +322,13 @@ public class CompanionData {
             , "Svenson", "Svensson", "Tomasson", "Ulfsson", "Victorsson", "Vinter", "Waltersson", "Wang",
             "Westerberg", "Winter", "Winther", "Wuopio",
     };
+
+    public static List<Item> getFoods(){
+        if(CACHED_FOODS == null){
+
+            CACHED_FOODS = Services.PLATFORM.getServer().registryAccess().lookup(Registries.ITEM).get().listElements().filter(itemRef -> itemRef.value().components().has(DataComponents.FOOD)).map(Holder.Reference::value).toList();
+        }
+
+        return CACHED_FOODS;
+    }
 }

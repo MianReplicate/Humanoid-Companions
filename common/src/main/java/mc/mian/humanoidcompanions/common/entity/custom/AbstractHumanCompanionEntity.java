@@ -653,11 +653,12 @@ public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
 
     public void setFoodRequirements() {
         foodRequirements.clear();
-        Item[] allFoods = CompanionData.ALL_FOODS;
-        food1 = allFoods[random.nextInt(allFoods.length)].getDescription().getString();
-        food2 = allFoods[random.nextInt(allFoods.length)].getDescription().getString();
+        List<Item> allFoods = CompanionData.getFoods();
+        int length = allFoods.size();
+        food1 = allFoods.get(random.nextInt(length)).getDescription().getString();
+        food2 = allFoods.get(random.nextInt(length)).getDescription().getString();
         while (food1.equals(food2)) {
-            food2 = allFoods[random.nextInt(allFoods.length)].getDescription().getString();
+            food2 = allFoods.get(random.nextInt(length)).getDescription().getString();
         }
         foodRequirements.put(food1, random.nextInt(5) + 1);
         foodRequirements.put(food2, random.nextInt(5) + 1);

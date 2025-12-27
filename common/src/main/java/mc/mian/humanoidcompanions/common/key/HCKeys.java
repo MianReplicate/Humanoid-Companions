@@ -32,6 +32,7 @@ public class HCKeys {
     public static final ResourceKey<StructureTemplatePool> SANDSTONE_POOL = createPool(HCUtil.modLoc("sandstone_pool"));
     public static final ResourceKey<StructureTemplatePool> SPRUCE_POOL = createPool(HCUtil.modLoc("spruce_pool"));
     public static final ResourceKey<StructureTemplatePool> TERRACOTTA_POOL = createPool(HCUtil.modLoc("terracotta_pool"));
+    public static final ResourceKey<StructureTemplatePool> COMPANION_POOL = createPool(HCUtil.modLoc("companions"));
 
     public static final ResourceKey<StructureSet> COMPANION_HOUSE = createSet(HCUtil.modLoc("companion_house"));
 
