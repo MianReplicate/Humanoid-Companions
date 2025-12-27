@@ -1,4 +1,4 @@
-package mc.mian.humanoidcompanions.common.entity.custom;
+package mc.mian.humanoidcompanions;
 
 import mc.mian.humanoidcompanions.common.util.HCUtil;
 import net.minecraft.network.chat.Component;
