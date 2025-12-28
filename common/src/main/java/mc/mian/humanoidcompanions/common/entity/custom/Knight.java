@@ -22,6 +22,11 @@ public class Knight extends AbstractHumanCompanionEntity {
     }
 
     @Override
+    public boolean swings() {
+        return true;
+    }
+
+    @Override
     public boolean isValidWeapon(ItemStack stack) {
     	return stack.is(HCKeys.SWORDS) || (!stack.is(HCKeys.AXES) && stack.getItem() instanceof SwordItem);
     }

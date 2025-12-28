@@ -1,5 +1,6 @@
 package mc.mian.humanoidcompanions.common.client.renderer;
 
+import mc.mian.humanoidcompanions.common.client.model.CompanionModel;
 import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
@@ -22,10 +23,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 
 
-public class CompanionRenderer extends HumanoidMobRenderer<AbstractHumanCompanionEntity, PlayerModel<AbstractHumanCompanionEntity>> {
+public class CompanionRenderer extends HumanoidMobRenderer<AbstractHumanCompanionEntity, CompanionModel<AbstractHumanCompanionEntity>> {
 
     public CompanionRenderer(Context context) {
-        super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
+        super(context, new CompanionModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidModel(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),

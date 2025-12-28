@@ -27,6 +27,11 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
     }
 
     @Override
+    public boolean swings() {
+        return false;
+    }
+
+    @Override
     public boolean isValidWeapon(ItemStack stack) {
         return stack.getItem() instanceof BowItem;
     }

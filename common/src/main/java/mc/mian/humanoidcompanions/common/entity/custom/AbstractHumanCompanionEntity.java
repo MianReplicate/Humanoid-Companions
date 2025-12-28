@@ -165,6 +165,15 @@ public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
         builder.define(FOOD2_AMT, 0);
     }
 
+    public abstract boolean swings();
+
+    @Override
+    public void aiStep() {
+        if(this.swings())
+            this.updateSwingTime();
+        super.aiStep();
+    }
+
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
                                         MobSpawnType reason, SpawnGroupData spawnDataIn) {
         int baseHealth = HCConfiguration.BASE_HEALTH.get() + CompanionData.getHealthModifier();

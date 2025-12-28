@@ -21,6 +21,11 @@ public class Axeguard extends AbstractHumanCompanionEntity {
     }
 
     @Override
+    public boolean swings() {
+        return true;
+    }
+
+    @Override
     public boolean isValidWeapon(ItemStack stack) {
     	return stack.is(HCKeys.AXES) || (!stack.is(HCKeys.SWORDS) && stack.getItem() instanceof AxeItem);
     }

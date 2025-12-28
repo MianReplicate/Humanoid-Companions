@@ -27,6 +27,11 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
     }
 
     @Override
+    public boolean swings() {
+        return false;
+    }
+
+    @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_CHARGING_CROSSBOW, false);
