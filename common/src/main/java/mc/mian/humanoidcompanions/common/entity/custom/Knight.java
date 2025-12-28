@@ -1,17 +1,13 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
-import mc.mian.humanoidcompanions.common.config.HCConfiguration;
 import mc.mian.humanoidcompanions.common.key.HCKeys;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 
 
 public class Knight extends AbstractHumanCompanionEntity {
@@ -19,11 +15,6 @@ public class Knight extends AbstractHumanCompanionEntity {
     public Knight(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
-    }
-
-    @Override
-    public boolean swings() {
-        return true;
     }
 
     @Override

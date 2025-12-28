@@ -9,10 +9,9 @@ import mc.mian.humanoidcompanions.common.entity.custom.ai.*;
 import mc.mian.humanoidcompanions.common.network.custom.OpenInventoryPacket;
 import mc.mian.humanoidcompanions.common.util.HCUtil;
 import mc.mian.humanoidcompanions.platform.Services;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,7 +21,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -47,6 +45,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 
 public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
 
@@ -165,11 +164,10 @@ public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
         builder.define(FOOD2_AMT, 0);
     }
 
-    public abstract boolean swings();
-
     @Override
     public void aiStep() {
-        if(this.swings())
+        HumanoidModel.ArmPose pose = this.getArmPose(InteractionHand.MAIN_HAND);
+        if(pose == HumanoidModel.ArmPose.ITEM || pose == HumanoidModel.ArmPose.EMPTY)
             this.updateSwingTime();
         super.aiStep();
     }
@@ -304,6 +302,29 @@ public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob parent) {
         return HCEntities.KNIGHT.get().create(level);
+    }
+
+    public HumanoidModel.ArmPose getArmPose(InteractionHand hand) {
+        ItemStack itemstack = this.getItemInHand(hand);
+        if (itemstack.isEmpty()) {
+            return HumanoidModel.ArmPose.EMPTY;
+        } else {
+            if (this.getUsedItemHand() == hand && this.getUseItemRemainingTicks() > 0) {
+                UseAnim useanim = itemstack.getUseAnimation();
+
+                if (useanim == UseAnim.BOW) {
+                    return HumanoidModel.ArmPose.BOW_AND_ARROW;
+                }
+
+                if (useanim == UseAnim.CROSSBOW && hand == this.getUsedItemHand()) {
+                    return HumanoidModel.ArmPose.CROSSBOW_CHARGE;
+                }
+            } else if (!this.swinging && itemstack.is(Items.CROSSBOW) && CrossbowItem.isCharged(itemstack)) {
+                return HumanoidModel.ArmPose.CROSSBOW_HOLD;
+            }
+
+            return HumanoidModel.ArmPose.ITEM;
+        }
     }
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -843,4 +864,15 @@ public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
     }
 
     public abstract ItemStack getSpawnWeapon();
+
+    @Override
+    public ItemStack getProjectile(ItemStack shootable) {
+        if (shootable.getItem() instanceof ProjectileWeaponItem) {
+            Predicate<ItemStack> predicate = ((ProjectileWeaponItem)shootable.getItem()).getSupportedHeldProjectiles();
+            ItemStack itemstack = ProjectileWeaponItem.getHeldProjectile(this, predicate);
+            return itemstack.isEmpty() ? new ItemStack(Items.ARROW) : itemstack;
+        } else {
+            return ItemStack.EMPTY;
+        }
+    }
 }

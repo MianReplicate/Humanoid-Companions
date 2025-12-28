@@ -1,12 +1,10 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
-import mc.mian.humanoidcompanions.common.config.HCConfiguration;
 import mc.mian.humanoidcompanions.common.entity.custom.ai.ArcherRangedBowAttackGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -14,8 +12,11 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
+
+import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 
 public class Archer extends AbstractHumanCompanionEntity implements RangedAttackMob {
@@ -24,11 +25,6 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
         super(entityType, level);
         this.goalSelector.addGoal(2, new ArcherRangedBowAttackGoal<>(this, 1.0D, 20, 20.0F));
 
-    }
-
-    @Override
-    public boolean swings() {
-        return false;
     }
 
     @Override
@@ -42,10 +38,9 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
 
     @Override
     public void performRangedAttack(LivingEntity toAttack, float velocity) {
-        ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.BOW)));
-        AbstractArrow abstractarrow = this.getArrow(itemstack, velocity);
-//        if (this.getMainHandItem().getItem() instanceof BowItem)
-//            abstractarrow = ((BowItem)this.getMainHandItem().getItem()).customArrow(abstractarrow);
+        ItemStack bow = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.BOW));
+        ItemStack arrow = this.getProjectile(bow);
+        AbstractArrow abstractarrow = this.getArrow(arrow, velocity, bow);
         double d0 = toAttack.getX() - this.getX();
         double d1 = toAttack.getY(0.3333333333333333D) - abstractarrow.getY();
         double d2 = toAttack.getZ() - this.getZ();
@@ -65,8 +60,8 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
         }
     }
 
-    protected AbstractArrow getArrow(ItemStack arrow, float velocity) {
-        return ProjectileUtil.getMobArrow(this, arrow, velocity, null);
+    protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
+        return ProjectileUtil.getMobArrow(this, arrow, velocity, weapon);
     }
 
     public void readAdditionalSaveData(CompoundTag tag) {

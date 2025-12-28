@@ -42,8 +42,8 @@ public class CompanionRenderer extends HumanoidMobRenderer<AbstractHumanCompanio
 
     private void setModelProperties(AbstractHumanCompanionEntity companion) {
         PlayerModel<AbstractHumanCompanionEntity> companionModel = this.getModel();
-        HumanoidModel.ArmPose humanoidmodel$armpose = getArmPose(companion, InteractionHand.MAIN_HAND);
-        HumanoidModel.ArmPose humanoidmodel$armpose1 = getArmPose(companion, InteractionHand.OFF_HAND);
+        HumanoidModel.ArmPose humanoidmodel$armpose = companion.getArmPose(InteractionHand.MAIN_HAND);
+        HumanoidModel.ArmPose humanoidmodel$armpose1 = companion.getArmPose(InteractionHand.OFF_HAND);
 
         if (companion.getMainArm() == HumanoidArm.RIGHT) {
             companionModel.rightArmPose = humanoidmodel$armpose;
@@ -51,29 +51,6 @@ public class CompanionRenderer extends HumanoidMobRenderer<AbstractHumanCompanio
         } else {
             companionModel.rightArmPose = humanoidmodel$armpose1;
             companionModel.leftArmPose = humanoidmodel$armpose;
-        }
-    }
-
-    private static HumanoidModel.ArmPose getArmPose(AbstractHumanCompanionEntity companion, InteractionHand hand) {
-        ItemStack itemstack = companion.getItemInHand(hand);
-        if (itemstack.isEmpty()) {
-            return HumanoidModel.ArmPose.EMPTY;
-        } else {
-            if (companion.getUsedItemHand() == hand && companion.getUseItemRemainingTicks() > 0) {
-                UseAnim useanim = itemstack.getUseAnimation();
-
-                if (useanim == UseAnim.BOW) {
-                    return HumanoidModel.ArmPose.BOW_AND_ARROW;
-                }
-
-                if (useanim == UseAnim.CROSSBOW && hand == companion.getUsedItemHand()) {
-                    return HumanoidModel.ArmPose.CROSSBOW_CHARGE;
-                }
-            } else if (!companion.swinging && itemstack.is(Items.CROSSBOW) && CrossbowItem.isCharged(itemstack)) {
-                return HumanoidModel.ArmPose.CROSSBOW_HOLD;
-            }
-
-            return HumanoidModel.ArmPose.ITEM;
         }
     }
 

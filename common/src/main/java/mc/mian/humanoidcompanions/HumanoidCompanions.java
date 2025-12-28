@@ -7,7 +7,6 @@ import mc.mian.humanoidcompanions.common.util.HCConstants;
 
 // TODO: convert literals to translatables
 // TODO: companion inventories arent always synced
-// TODO: get companions to swing arms
 public class HumanoidCompanions {
     public static void init() {
         HCConstants.LOGGER.info("I LOVE PEOPLE!");

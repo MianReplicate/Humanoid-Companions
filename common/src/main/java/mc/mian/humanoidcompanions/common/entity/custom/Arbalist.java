@@ -1,18 +1,14 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
-import mc.mian.humanoidcompanions.common.config.HCConfiguration;
 import mc.mian.humanoidcompanions.common.entity.custom.ai.ArbalistRangedCrossbowAttackGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 
 import java.util.function.Predicate;
 
@@ -24,11 +20,6 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
     public Arbalist(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
         this.goalSelector.addGoal(3, new ArbalistRangedCrossbowAttackGoal<>(this, 1.0D, 8.0F));
-    }
-
-    @Override
-    public boolean swings() {
-        return false;
     }
 
     @Override
@@ -75,15 +66,5 @@ public class Arbalist extends AbstractHumanCompanionEntity implements CrossbowAt
     @Override
     public ItemStack getSpawnWeapon() {
         return Items.CROSSBOW.getDefaultInstance();
-    }
-
-    public ItemStack getProjectile(ItemStack p_33038_) {
-        if (p_33038_.getItem() instanceof ProjectileWeaponItem) {
-            Predicate<ItemStack> predicate = ((ProjectileWeaponItem)p_33038_.getItem()).getSupportedHeldProjectiles();
-            ItemStack itemstack = ProjectileWeaponItem.getHeldProjectile(this, predicate);
-            return itemstack.isEmpty() ? new ItemStack(Items.ARROW) : itemstack;
-        } else {
-            return ItemStack.EMPTY;
-        }
     }
 }
