@@ -1,17 +1,23 @@
-package mc.mian.humanoidcompanions.common.container;
+package mc.mian.humanoidcompanions.common.menu;
 
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class CompanionContainer extends AbstractContainerMenu {
+public class CompanionMenu extends AbstractContainerMenu {
     private final Container container;
     private final int containerRows;
 
-    public CompanionContainer(int containerId, Inventory inventory, Container container) {
+    public CompanionMenu(int containerId, Inventory playerInventory) {
+        this(containerId, playerInventory, new SimpleContainer(27));
+    }
+
+    public CompanionMenu(int containerId, Inventory inventory, Container container) {
         super(null, containerId);
         checkContainerSize(container, 3 * 9);
         this.container = container;

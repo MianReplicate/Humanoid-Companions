@@ -3,7 +3,7 @@ package mc.mian.humanoidcompanions.common.network.custom;
 import commonnetwork.networking.data.PacketContext;
 import commonnetwork.networking.data.Side;
 import mc.mian.humanoidcompanions.common.client.CompanionScreen;
-import mc.mian.humanoidcompanions.common.container.CompanionContainer;
+import mc.mian.humanoidcompanions.common.menu.CompanionMenu;
 import mc.mian.humanoidcompanions.common.util.HCUtil;
 import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import net.minecraft.client.Minecraft;
@@ -63,7 +63,7 @@ public class OpenInventoryPacket {
                 if (entity instanceof AbstractHumanCompanionEntity) {
                     AbstractHumanCompanionEntity companion = (AbstractHumanCompanionEntity) entity;
                     LocalPlayer client = Minecraft.getInstance().player;
-                    CompanionContainer container = new CompanionContainer(ctx.message().getId(), player.getInventory(), companion.inventory);
+                    CompanionMenu container = new CompanionMenu(ctx.message().getId(), player.getInventory(), companion.inventory);
                     client.containerMenu = container;
                     Minecraft.getInstance().setScreen(new CompanionScreen(container, player.getInventory(), companion));
                 }

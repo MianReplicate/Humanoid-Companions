@@ -1,4 +1,4 @@
-package mc.mian.humanoidcompanions;
+package mc.mian.humanoidcompanions.common;
 
 import mc.mian.humanoidcompanions.common.util.HCUtil;
 import mc.mian.humanoidcompanions.platform.Services;

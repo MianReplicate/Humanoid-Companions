@@ -11,7 +11,7 @@ import mc.mian.humanoidcompanions.platform.FabricPlatformHelper;
 import mc.mian.humanoidcompanions.platform.Services;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
 import net.fabricmc.api.ModInitializer;
-import mc.mian.humanoidcompanions.HumanoidCompanions;
+import mc.mian.humanoidcompanions.common.HumanoidCompanions;
 import mc.mian.humanoidcompanions.common.config.ConfigHolder;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;

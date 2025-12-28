@@ -1,4 +1,4 @@
-package mc.mian.humanoidcompanions;
+package mc.mian.humanoidcompanions.common;
 
 import mc.mian.humanoidcompanions.common.entity.HCEntities;
 import mc.mian.humanoidcompanions.common.network.HCNetwork;

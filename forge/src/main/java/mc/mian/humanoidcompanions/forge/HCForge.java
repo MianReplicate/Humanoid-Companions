@@ -1,6 +1,6 @@
 package mc.mian.humanoidcompanions.forge;
 
-import mc.mian.humanoidcompanions.HumanoidCompanions;
+import mc.mian.humanoidcompanions.common.HumanoidCompanions;
 import mc.mian.humanoidcompanions.common.config.ConfigHolder;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
 import net.minecraftforge.common.MinecraftForge;

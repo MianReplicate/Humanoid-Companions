@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.common.client;
 
 import commonnetwork.api.Network;
-import mc.mian.humanoidcompanions.common.container.CompanionContainer;
+import mc.mian.humanoidcompanions.common.menu.CompanionMenu;
 import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mc.mian.humanoidcompanions.common.entity.custom.Arbalist;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 
-public class CompanionScreen extends AbstractContainerScreen<CompanionContainer> implements MenuAccess<CompanionContainer> {
+public class CompanionScreen extends AbstractContainerScreen<CompanionMenu> implements MenuAccess<CompanionMenu> {
     private static final ResourceLocation CONTAINER_BACKGROUND = HCUtil.modLoc(
         "textures/inventory.png");
     private static final WidgetSprites ALERT_SPRITES = new WidgetSprites(
@@ -97,7 +97,7 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionContainer>
     int col1;
     int col2;
 
-    public CompanionScreen(CompanionContainer container, Inventory pPlayerInventory,
+    public CompanionScreen(CompanionMenu container, Inventory pPlayerInventory,
                            AbstractHumanCompanionEntity companion) {
         super(container, pPlayerInventory, companion.getName());
         this.companion = companion;
