@@ -1,7 +1,7 @@
 <img src="https://i.imgur.com/vKLNdeW.png">
 
 # Humanoid Companions
-**....is a Minecraft mod fork of [Human Companions](https://www.curseforge.com/minecraft/mc-mods/human-companions) by jus10wontons for 1.21.1+ on Forge, NeoForge and Fabric!**
+**....is a Minecraft mod fork of [Human Companions](https://www.curseforge.com/minecraft/mc-mods/human-companions) by jus10wontons for 1.21.1+ adding tamable human companions on Forge, NeoForge and Fabric!**
 
 ***This mod may be used in any modpack.***
 
