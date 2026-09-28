@@ -1,9 +1,9 @@
 package mc.mian.humanoidcompanions.common.network.custom;
 
-import commonnetwork.networking.data.PacketContext;
-import commonnetwork.networking.data.Side;
 import mc.mian.humanoidcompanions.common.client.CompanionScreen;
 import mc.mian.humanoidcompanions.common.menu.CompanionMenu;
+import mc.mian.humanoidcompanions.common.network.Context;
+import mc.mian.humanoidcompanions.common.network.Side;
 import mc.mian.humanoidcompanions.common.util.HCUtil;
 import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import net.minecraft.client.Minecraft;
@@ -15,26 +15,28 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-public class OpenInventoryPacket {
+public class OpenInventoryPayload implements CustomPacketPayload {
     public static final ResourceLocation CHANNEL = HCUtil.modLoc("open_inventory");
-    public static final StreamCodec<FriendlyByteBuf, OpenInventoryPacket> STREAM_CODEC =
-            StreamCodec.ofMember(OpenInventoryPacket::encode, OpenInventoryPacket::new);
+    public static final CustomPacketPayload.Type<OpenInventoryPayload> TYPE = new CustomPacketPayload.Type<>(CHANNEL);
+    public static final StreamCodec<FriendlyByteBuf, OpenInventoryPayload> STREAM_CODEC =
+            StreamCodec.ofMember(OpenInventoryPayload::encode, OpenInventoryPayload::new);
 
-    public static CustomPacketPayload.Type<CustomPacketPayload> type(){
-        return new CustomPacketPayload.Type<>(CHANNEL);
+    @Override
+    public CustomPacketPayload.Type<OpenInventoryPayload> type(){
+        return TYPE;
     }
 
     private final int id;
     private final int size;
     private final int entityId;
 
-    public OpenInventoryPacket(int id, int size, int entityId){
+    public OpenInventoryPayload(int id, int size, int entityId){
         this.id = id;
         this.size = size;
         this.entityId = entityId;
     }
 
-    public OpenInventoryPacket(FriendlyByteBuf buf){
+    public OpenInventoryPayload(FriendlyByteBuf buf){
         id = buf.readByte();
         size = buf.readVarInt();
         entityId = buf.readInt();
@@ -54,7 +56,7 @@ public class OpenInventoryPacket {
         buf.writeInt(this.entityId);
     }
 
-    public static void handle(PacketContext<OpenInventoryPacket> ctx)
+    public static void handle(Context<OpenInventoryPayload> ctx)
     {
         if(ctx.side() == Side.CLIENT){
             Player player = Minecraft.getInstance().player;

@@ -15,7 +15,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 
@@ -60,7 +59,7 @@ public class Archer extends AbstractHumanCompanionEntity implements RangedAttack
         }
     }
 
-    protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
+    protected AbstractArrow getArrow(ItemStack arrow, float velocity, ItemStack weapon) {
         return ProjectileUtil.getMobArrow(this, arrow, velocity, weapon);
     }
 

@@ -1,7 +1,7 @@
 package mc.mian.humanoidcompanions.common.network.custom;
 
-import commonnetwork.networking.data.PacketContext;
 import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
+import mc.mian.humanoidcompanions.common.network.Context;
 import mc.mian.humanoidcompanions.common.util.HCUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -12,22 +12,25 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class ReleasePacket {
+public class ReleasePayload implements CustomPacketPayload {
     public static final ResourceLocation CHANNEL = HCUtil.modLoc("release");
-    public static final StreamCodec<FriendlyByteBuf, ReleasePacket> STREAM_CODEC =
-            StreamCodec.ofMember(ReleasePacket::encode, ReleasePacket::new);
+    public static final StreamCodec<FriendlyByteBuf, ReleasePayload> STREAM_CODEC =
+            StreamCodec.ofMember(ReleasePayload::encode, ReleasePayload::new);
 
-    public static CustomPacketPayload.Type<CustomPacketPayload> type(){
-        return new CustomPacketPayload.Type<>(CHANNEL);
+    public static final CustomPacketPayload.Type<ReleasePayload> TYPE = new CustomPacketPayload.Type<>(CHANNEL);
+
+    @Override
+    public CustomPacketPayload.Type<ReleasePayload> type(){
+        return TYPE;
     }
 
     private final int entityId;
 
-    public ReleasePacket(int id){
+    public ReleasePayload(int id){
         entityId = id;
     }
 
-    public ReleasePacket(FriendlyByteBuf buf){
+    public ReleasePayload(FriendlyByteBuf buf){
         entityId = buf.readInt();
     }
 
@@ -39,7 +42,7 @@ public class ReleasePacket {
         buf.writeInt(this.entityId);
     }
 
-    public static void handle(PacketContext<ReleasePacket> ctx)
+    public static void handle(Context<ReleasePayload> ctx)
     {
         ServerPlayer player = ctx.sender();
         if (player != null && player.level() instanceof ServerLevel) {

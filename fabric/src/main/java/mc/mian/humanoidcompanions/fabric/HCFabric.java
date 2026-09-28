@@ -7,6 +7,7 @@ import mc.mian.humanoidcompanions.common.entity.custom.Archer;
 import mc.mian.humanoidcompanions.common.entity.custom.Axeguard;
 import mc.mian.humanoidcompanions.common.entity.custom.Knight;
 import mc.mian.humanoidcompanions.common.item.HCItems;
+import mc.mian.humanoidcompanions.platform.FabricNetworkRegistry;
 import mc.mian.humanoidcompanions.platform.FabricPlatformHelper;
 import mc.mian.humanoidcompanions.platform.Services;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
@@ -25,17 +26,14 @@ public class HCFabric implements ModInitializer {
         ForgeConfigRegistry.INSTANCE.register(HCConstants.MOD_ID, ModConfig.Type.COMMON, ConfigHolder.SERVER_SPEC);
         ((FabricPlatformHelper) Services.PLATFORM).init();
         HumanoidCompanions.init();
+        ((FabricNetworkRegistry) Services.NETWORK).registerServer();
 
         FabricDefaultAttributeRegistry.register(HCEntities.KNIGHT.get(), Knight.createAttributes());
         FabricDefaultAttributeRegistry.register(HCEntities.ARCHER.get(), Archer.createAttributes());
         FabricDefaultAttributeRegistry.register(HCEntities.ARBALIST.get(), Arbalist.createAttributes());
         FabricDefaultAttributeRegistry.register(HCEntities.AXEGUARD.get(), Axeguard.createAttributes());
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register((entries) -> {
-            entries.accept(HCItems.ARBALIST_SPAWN_EGG.get());
-            entries.accept(HCItems.ARCHER_SPAWN_EGG.get());
-            entries.accept(HCItems.KNIGHT_SPAWN_EGG.get());
-            entries.accept(HCItems.AXE_GUARD_SPAWN_EGG.get());
-        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register((entries) ->
+                HCItems.SPAWN_EGGS.forEach(egg -> entries.accept(egg.get())));
     }
 }

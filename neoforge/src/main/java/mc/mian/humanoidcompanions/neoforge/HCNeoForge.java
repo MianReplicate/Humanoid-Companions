@@ -5,10 +5,12 @@ import mc.mian.humanoidcompanions.common.HumanoidCompanions;
 import mc.mian.humanoidcompanions.common.config.ConfigHolder;
 import mc.mian.humanoidcompanions.datagen.HCDataGenerators;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
+import mc.mian.humanoidcompanions.platform.NeoForgeNetworkRegistry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(HCConstants.MOD_ID)
 public class HCNeoForge {
@@ -16,6 +18,7 @@ public class HCNeoForge {
     public static final IEventBus commonEventBus = NeoForge.EVENT_BUS;
     public HCNeoForge(IEventBus modEventBusParam) {
         modEventBus = modEventBusParam;
+        modEventBus.addListener(RegisterPayloadHandlersEvent.class, NeoForgeNetworkRegistry::registerPayload);
 
         ForgeConfigRegistry.INSTANCE.register(ModConfig.Type.COMMON, ConfigHolder.SERVER_SPEC);
 //        ModLoadingContext.get().getActiveContainer().registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);

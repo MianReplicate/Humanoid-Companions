@@ -3,6 +3,8 @@ package mc.mian.humanoidcompanions.forge;
 import mc.mian.humanoidcompanions.common.HumanoidCompanions;
 import mc.mian.humanoidcompanions.common.config.ConfigHolder;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
+import mc.mian.humanoidcompanions.platform.ForgeNetworkRegistry;
+import mc.mian.humanoidcompanions.platform.Services;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -17,6 +19,9 @@ public class HCForge {
     public HCForge() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHolder.SERVER_SPEC);
 
+
         HumanoidCompanions.init();
+
+        ((ForgeNetworkRegistry) Services.NETWORK).build();
     }
 }

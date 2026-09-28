@@ -1,6 +1,5 @@
 package mc.mian.humanoidcompanions.common.client;
 
-import commonnetwork.api.Network;
 import mc.mian.humanoidcompanions.common.menu.CompanionMenu;
 import mc.mian.humanoidcompanions.common.entity.custom.AbstractHumanCompanionEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -9,6 +8,7 @@ import mc.mian.humanoidcompanions.common.entity.custom.Archer;
 import mc.mian.humanoidcompanions.common.entity.custom.Knight;
 import mc.mian.humanoidcompanions.common.network.custom.*;
 import mc.mian.humanoidcompanions.common.util.HCUtil;
+import mc.mian.humanoidcompanions.platform.Services;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -141,14 +141,14 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionMenu> impl
                 12,
                 ALERT_SPRITES,
                 btn -> {
-                    Network.getNetworkHandler().sendToServer(new SetAlertPacket(companion.getId()));
+                    Services.NETWORK.sendToServer(new SetAlertPayload(companion.getId()));
                 }));
         this.huntingButton = addRenderableWidget(new CompanionButton(this.companion::isHunting, col2, row1,
                 16,
                 12,
                 HUNTING_SPRITES,
                 btn -> {
-                    Network.getNetworkHandler().sendToServer(new SetHuntingPacket(companion.getId()));
+                    Services.NETWORK.sendToServer(new SetHuntingPayload(companion.getId()));
                 }));
         this.patrolButton = addRenderableWidget(new DynamicWidgetCompanionButton(
                 () -> true,
@@ -164,7 +164,7 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionMenu> impl
                     return FOLLOW_SPRITES;
                 },
                 btn -> {
-                    Network.getNetworkHandler().sendToServer(new SetPatrollingPacket(companion.getId()));
+                    Services.NETWORK.sendToServer(new SetPatrollingPayload(companion.getId()));
                 }));
         if (companion instanceof Archer || companion instanceof Arbalist) {
             this.stationaryButton = addRenderableWidget(new CompanionButton(this.companion::isStationary, col2,
@@ -173,21 +173,21 @@ public class CompanionScreen extends AbstractContainerScreen<CompanionMenu> impl
                     12,
                     STATIONARY_SPRITES,
                     btn -> {
-                        Network.getNetworkHandler().sendToServer(new SetStationaryPacket(companion.getId()));
+                        Services.NETWORK.sendToServer(new SetStationaryPayload(companion.getId()));
                     }));
         }
         this.clearButton = addRenderableWidget(new ImageButton(leftPos + sidebarx + 5, row3, 31,
                 12,
                 CLEAR_SPRITES,
                 btn -> {
-                    Network.getNetworkHandler().sendToServer(new ClearTargetPacket(companion.getId()));
+                    Services.NETWORK.sendToServer(new ClearTargetPayload(companion.getId()));
                 }));
         this.releaseButton = addRenderableWidget(new ImageButton(leftPos + sidebarx + 3, topPos + 148,
                 34,
                 12,
                 RELEASE_SPRITES,
                 btn -> {
-                    Network.getNetworkHandler().sendToServer(new ReleasePacket(companion.getId()));
+                    Services.NETWORK.sendToServer(new ReleasePayload(companion.getId()));
                     this.onClose();
                 }));
     }

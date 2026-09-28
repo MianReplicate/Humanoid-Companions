@@ -1,8 +1,6 @@
 package mc.mian.humanoidcompanions.platform;
 
-import mc.mian.humanoidcompanions.platform.services.IEventHelper;
-import mc.mian.humanoidcompanions.platform.services.IPlatformHelper;
-import mc.mian.humanoidcompanions.platform.services.IRegistryCreator;
+import mc.mian.humanoidcompanions.platform.services.*;
 import mc.mian.humanoidcompanions.common.util.HCConstants;
 
 import java.util.ServiceLoader;
@@ -17,6 +15,8 @@ public class Services {
     public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
     public static final IRegistryCreator REGISTRY_CREATOR = load(IRegistryCreator.class);
     public static final IEventHelper EVENT = load(IEventHelper.class);
+    public static final IEggCreator EGG = load(IEggCreator.class);
+    public static final INetworkRegistry NETWORK = load(INetworkRegistry.class);
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

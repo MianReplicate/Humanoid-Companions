@@ -1,11 +1,12 @@
 package mc.mian.humanoidcompanions.common.entity.custom;
 
 import mc.mian.humanoidcompanions.common.config.HCConfiguration;
-import mc.mian.humanoidcompanions.common.menu.CompanionMenu;
 import mc.mian.humanoidcompanions.common.CompanionData;
 import mc.mian.humanoidcompanions.common.entity.HCEntities;
 import mc.mian.humanoidcompanions.common.entity.custom.ai.*;
+import mc.mian.humanoidcompanions.common.network.custom.OpenInventoryPayload;
 import mc.mian.humanoidcompanions.common.util.HCUtil;
+import mc.mian.humanoidcompanions.platform.Services;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -387,7 +388,7 @@ public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
                         }
                     } else {
                         if(!this.level().isClientSide()) {
-                            this.openGui((ServerPlayer) player);
+                            Services.NETWORK.sendToPlayer(((ServerPlayer)player), new OpenInventoryPayload(((ServerPlayer)player).containerCounter, this.inventory.getContainerSize(), this.getId()));
                         }
                     }
                 }
@@ -397,22 +398,6 @@ public abstract class AbstractHumanCompanionEntity extends TamableAnimal {
         }
         return super.mobInteract(player, hand);
     }
-
-    public void openGui(ServerPlayer player) {
-//        if (player.containerMenu != player.inventoryMenu) {
-//            player.closeContainer();
-//        }
-//        player.nextContainerCounter();
-//        Network.getNetworkHandler().sendToClient(new OpenInventoryPacket(player.containerCounter, this.inventory.getContainerSize(), this.getId()), player);
-
-        player.openMenu(new SimpleMenuProvider((container, plrInventory, _player) -> new CompanionMenu(container, plrInventory, this.inventory), Component.empty()));
-//        player.containerMenu = new CompanionContainer(player.containerCounter, player.getInventory(), this.inventory);
-//        player.initMenu(player.containerMenu);
-//        player.openMenu()
-
-//        Services.EVENT.postOpenContainer(player, player.containerMenu);
-    }
-
     public void checkArmor() {
         ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
         ItemStack chest = this.getItemBySlot(EquipmentSlot.CHEST);
